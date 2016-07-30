@@ -1,5 +1,6 @@
 Item Management:
 - If cannont spin pokestop due to inventory full, run inventory management
+- Drop certain items on pickup (configurable)
 
 Egg Management:
 - Determine when eggs are obtained
