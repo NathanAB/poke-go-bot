@@ -70,10 +70,9 @@ b.init(username, password, location, provider, function (err) {
       var locationCoords = b.GetLocationCoords();
       locationCoords.latitude += Math.random() * 0.00005 + 0.00005;
       locationCoords.longitude += Math.random() * 0.00005 + 0.00005;
-      b.SetLocation({ type: 'coords', coords: locationCoords }, function setLocationRes(err, loc) {
-        if (err) {
-          throw err;
-        }
+
+      b.UpdateLocation({ type: 'coords', coords: locationCoords }, function(err, loc){
+        if(err){ throw err; }
 
         console.log('Updating Location [', loc.latitude, ', ', loc.longitude, ']');
       });
