@@ -1,4 +1,5 @@
 var utils = require('../utils');
+var items = require('../items.json');
 
 /**
  * Look for and spin any nearby pokestops, reporting items gained.

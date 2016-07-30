@@ -1,8 +1,6 @@
 var PokemonGO = require('pokemon-go-node-api');
-var config = require('./config.json');
-var items = require('./items.json');
 
-// Load Actions
+var config = require('./config.json');
 var pokestops = require('./actions/pokestops');
 var catching = require('./actions/catching');
 var movement = require('./actions/movement');
@@ -10,9 +8,13 @@ var movement = require('./actions/movement');
 var username = config.user;
 var password = config.pass;
 var location = config.location;
+var gmapsApiKey = config.gmapsApiKey;
 var provider = 'ptc';
+var caughtPokemon = {};
 
 var Pogo = new PokemonGO.Pokeio();
+
+console.time('Time Elapsed');
 
 Pogo.SetGmapsApiKey(config.gmapsApiKey);
 
@@ -89,3 +91,13 @@ Pogo.init(username, password, location, provider, function (err) {
     }, 3000);
   });
 });
+
+function exitHandler(){
+  console.log('\n');
+  console.timeEnd('Time Elapsed');
+  console.log('Pokemon Caught: ', JSON.stringify(caughtPokemon));
+  console.log('XP Gained: ');
+  process.exit();
+}
+
+process.on('SIGINT', exitHandler);

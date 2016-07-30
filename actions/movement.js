@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 // Movement Boundries
 // 38.9096936, -77.043339 -- Top Left
 // 38.8896936, -77.023339 -- Bottom Right
@@ -9,8 +11,8 @@ function chooseCoordinates(coords, target){
   var directionLat = Math.random() < (coords.latitude - target.latitude) / 0.02 ? -1 : 1;
   var directionLong = Math.random() < (coords.longitude - target.longitude) / 0.02 ? -1 : 1;
 
-  var deltaLat = Math.random() * 0.00005 + 0.000045;
-  var deltaLong = Math.random() * 0.00005 + 0.000045;
+  var deltaLat = _.random(0, 0.000095, true);
+  var deltaLong = _.random(0, 0.000095, true);
 
   coords.latitude += deltaLat * directionLat;
   coords.longitude += deltaLong * directionLong;
