@@ -11,9 +11,14 @@ var location = config.location;
 var gmapsApiKey = config.gmapsApiKey;
 var provider = 'ptc';
 
+// Interval between heartbeats in ms
+var HEARTBEAT_INTERVAL = 3000;
+
 var Pogo = new PokemonGO.Pokeio();
 Pogo.caughtPokemon = {};
 Pogo.xpGained = 0;
+Pogo.pokestopsSpun = 0;
+Pogo.itemsGained = 0;
 
 console.time('Time Elapsed');
 
@@ -85,11 +90,11 @@ Pogo.init(username, password, location, provider, function (err) {
         for (i = hb.cells.length - 1; i >= 0; i--) {
           for (var j = hb.cells[i].MapPokemon.length - 1; j >= 0; j--) {   // use async lib with each or eachSeries should be better :)
             var currentPokemon = hb.cells[i].MapPokemon[j];
-            catching.engageAndCatchPokemon(Pogo);
+            catching.engageAndCatchPokemon(Pogo, currentPokemon);
           }
         }
       });
-    }, 3000);
+    }, HEARTBEAT_INTERVAL);
   });
 });
 
@@ -97,7 +102,9 @@ function exitHandler(){
   console.log('\n');
   console.timeEnd('Time Elapsed');
   console.log('Pokemon Caught: ', JSON.stringify(Pogo.caughtPokemon));
-  console.log('XP Gained: ');
+  console.log('Pokestops Spun: ', Pogo.pokestopsSpun);
+  console.log('# Items Gained: ', Pogo.itemsGained);
+  console.log('XP Gained: ~', Pogo.xpGained);
   process.exit();
 }
 

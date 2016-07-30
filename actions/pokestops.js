@@ -26,6 +26,9 @@ function spinPokestops(Pogo, hb, coords) {
           // Reference node_modules/pokemon-go-node-api/pokemon.proto#1013
           if (res.result === 1) {
             console.log('Spun pokestop! Acquired:');
+            Pogo.xpGained += 50;
+            Pogo.pokestopsSpun++;
+            Pogo.itemsGained += res.items_awarded.length;
             res.items_awarded.forEach(function printLoot(item) {
               console.log(items[item.item_id]);
             });

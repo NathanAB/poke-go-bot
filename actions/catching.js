@@ -17,6 +17,7 @@ function engageAndCatchPokemon(Pogo, pokemon) {
         console.log('Catching a ' + pokedexInfo.name + '... ' + status[xdat.Status]);
         if(xdat.Status === 1){
           Pogo.caughtPokemon.push(pokedexInfo.name);
+          Pogo.xpGained += 100;
         }
       }
     });
