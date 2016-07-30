@@ -1,13 +1,18 @@
+var _ = require('lodash');
 var PokemonGO = require('pokemon-go-node-api');
+
 var config = require('./config.json');
 var items = require('./items.json');
 
 var username = config.user;
 var password = config.pass;
 var location = config.location;
+var gmapsApiKey = config.gmapsApiKey;
 var provider = 'ptc';
 
 var b = new PokemonGO.Pokeio();
+
+var caughtPokemon = {};
 
 function getDistanceInM(lat1, lon1, lat2, lon2) {
   var R = 6371; // Radius of the earth in km
@@ -35,9 +40,12 @@ function engageAndCatchPokemon(pokemon) {
     b.CatchPokemon(pokemon, 1, 1.950, 1, 1, function (xsuc, xdat) {
       // xdat can provide success chance
       // console.log(xsuc, xdat);
-      var status = ['Unexpected error', 'Successful catch', 'Escaped', 'Fled', 'Missed'];
+      var status = ['Unexpected error', 'Success', 'Escaped', 'Fled', 'Missed'];
       if (xdat && xdat.Status) {
         console.log('Catching a ' + pokedexInfo.name + '... ' + status[xdat.Status]);
+        if(xdat.Status === 1){
+          caughtPokemon.push(pokedexInfo.name);
+        }
       }
     });
   });
@@ -54,8 +62,8 @@ function chooseCoordinates(coords, target){
   var directionLat = Math.random() < (coords.latitude - target.latitude) / 0.02 ? -1 : 1;
   var directionLong = Math.random() < (coords.longitude - target.longitude) / 0.02 ? -1 : 1;
 
-  var deltaLat = Math.random() * 0.00005 + 0.000045;
-  var deltaLong = Math.random() * 0.00005 + 0.000045;
+  var deltaLat = _.random(0, 0.000095, true);
+  var deltaLong = _.random(0, 0.000095, true);
 
   coords.latitude += deltaLat * directionLat;
   coords.longitude += deltaLong * directionLong;
@@ -72,7 +80,9 @@ function chooseNewTarget(){
   return newTarget;
 }
 
-b.SetGmapsApiKey(config.gmapsApiKey);
+console.time('Time Elapsed');
+
+b.SetGmapsApiKey(gmapsApiKey);
 
 b.init(username, password, location, provider, function (err) {
   if (err) throw err;
@@ -172,3 +182,13 @@ b.init(username, password, location, provider, function (err) {
     }, 3500);
   });
 });
+
+function exitHandler(){
+  console.log('\n');
+  console.timeEnd('Time Elapsed');
+  console.log('Pokemon Caught: ');
+  console.log('XP Gained: ');
+  process.exit();
+}
+
+process.on('SIGINT', exitHandler);
