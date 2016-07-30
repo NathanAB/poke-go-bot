@@ -1,17 +1,30 @@
 var PokemonGO = require('pokemon-go-node-api');
+var config = require('./config.json');
 
-var username = process.env.PGO_USERNAME || 'USER';
-var password = process.env.PGO_PASSWORD || 'PASS';
+var username = config.user;
+var password = config.pass;
+var location = config.location;
 var provider = 'ptc';
-var location = {
-  type: 'coords',
-  coords: {
-    latitude: 38.91649225483398,
-    longitude: -77.04155915224943
-  }
-};
 
 var b = new PokemonGO.Pokeio();
+
+function getDistanceInM(lat1,lon1,lat2,lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+  var dLon = deg2rad(lon2-lon1); 
+  var a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+    ; 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c; // Distance in km
+  return d * 1000;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
+}
 
 b.init(username, password, location, provider, function(err) {
     if (err) throw err;
@@ -45,18 +58,49 @@ b.init(username, password, location, provider, function(err) {
 
                 console.log('Updating Location [Lat', loc.latitude, ', Long', loc.longitude, ']');
               });
+
             b.Heartbeat(function(err,hb) {
                 if(err) {
                     console.log(err);
                 }
 
+                // Print nearby pokemon
+                var nearby = 'Nearby:';
                 for (var i = hb.cells.length - 1; i >= 0; i--) {
+                    // console.log(JSON.stringify(hb.cells[i], null, '\t'));
                     if(hb.cells[i].NearbyPokemon[0]) {
-                        //console.log(a.pokemonlist[0])
                         var pokemon = b.pokemonlist[parseInt(hb.cells[i].NearbyPokemon[0].PokedexNumber)-1];
-                        console.log('[+] There is a ' + pokemon.name + ' at ' + hb.cells[i].NearbyPokemon[0].DistanceMeters.toString() + ' meters');
+                        // console.log('[+] There is a ' + pokemon.name + ' at ' + hb.cells[i].NearbyPokemon[0].DistanceMeters.toString() + ' meters');
+                        nearby += ' ' + pokemon.name;
                     }
                 }
+                console.log(nearby);
+
+                // Show nearby pokestops
+                hb.cells.forEach(function searchCell(cell) {
+                    cell.Fort.forEach(function processFort(fort) {
+                        if (!fort.Enabled || fort.FortType !== 1) {
+                            return;
+                        }
+                        var dist = getDistanceInM(fort.Latitude, fort.Longitude, locationCoords.latitude, locationCoords.longitude);
+                        if(dist < 50) {
+                            b.GetFort(fort.FortId, fort.Latitude, fort.Longitude, function getFort(err, res) {
+                                if(err) {
+                                    return console.log('Error spinning pokestop: ' + err);
+                                }
+
+                                if (res.result !== 1) {
+                                    console.log('Failed to spin pokestop -- spun already?');
+                                } else {
+                                    console.log('Spun pokestop! Acquired ' + res.items_awarded.length + ' items.');
+                                    res.items_awarded.forEach(function printLoot(item) {
+                                        // Lookup item code and print
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
 
                 // Show MapPokemons (catchable) & catch
                 for (i = hb.cells.length - 1; i >= 0; i--) {
@@ -66,10 +110,9 @@ b.init(username, password, location, provider, function(err) {
 
                         (function(currentPokemon) {
                             var pokedexInfo = b.pokemonlist[parseInt(currentPokemon.PokedexTypeId)-1];
-                            console.log('[+] There is a ' + pokedexInfo.name + ' near!! I can try to catch it!');
 
                             b.EncounterPokemon(currentPokemon, function(suc, dat) {
-                                console.log('Encountering pokemon ' + pokedexInfo.name + '...');
+                                console.log('Engaging a ' + pokedexInfo.name + '...');
                                 b.CatchPokemon(currentPokemon, 1, 1.950, 1, 1, function(xsuc, xdat) {
                                     console.log(xsuc, xdat);
                                     var status = ['Unexpected error', 'Successful catch', 'Catch Escape', 'Catch Flee', 'Missed Catch'];
