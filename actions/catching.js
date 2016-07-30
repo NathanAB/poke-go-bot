@@ -4,7 +4,7 @@
  * @param {PokeIO}  Pogo    PokeIO API
  * @param {Pokemon} pokemon Pokemon to catch
  */
-function engageAndCatchPokemon(Pogo, pokemon, caughtPokemon) {
+function engageAndCatchPokemon(Pogo, pokemon) {
 
   var pokedexInfo = Pogo.pokemonlist[parseInt(pokemon.PokedexTypeId) - 1];
 
@@ -16,7 +16,7 @@ function engageAndCatchPokemon(Pogo, pokemon, caughtPokemon) {
       if (xdat && xdat.Status) {
         console.log('Catching a ' + pokedexInfo.name + '... ' + status[xdat.Status]);
         if(xdat.Status === 1){
-          caughtPokemon.push(pokedexInfo.name);
+          Pogo.caughtPokemon.push(pokedexInfo.name);
         }
       }
     });
