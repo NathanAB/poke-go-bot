@@ -43,6 +43,35 @@ function engageAndCatchPokemon(pokemon) {
   });
 }
 
+// Movement Boundries
+// 38.9096936, -77.043339 -- Top Left
+// 38.8896936, -77.023339 -- Bottom Right
+
+var minLat = 38.8896936;
+var minLong = -77.0433390;
+
+function chooseCoordinates(coords, target){
+  var directionLat = Math.random() < (coords.latitude - target.latitude) / 0.02 ? -1 : 1;
+  var directionLong = Math.random() < (coords.longitude - target.longitude) / 0.02 ? -1 : 1;
+
+  var deltaLat = Math.random() * 0.00005 + 0.000045;
+  var deltaLong = Math.random() * 0.00005 + 0.000045;
+
+  coords.latitude += deltaLat * directionLat;
+  coords.longitude += deltaLong * directionLong;
+  
+  return coords;
+}
+
+function chooseNewTarget(){
+  var newTarget = {
+    latitude: Math.random() * 0.02 + minLat,
+    longitude: Math.random() * 0.02 + minLong
+  };
+
+  return newTarget;
+}
+
 b.SetGmapsApiKey(config.gmapsApiKey);
 
 b.init(username, password, location, provider, function (err) {
@@ -64,18 +93,28 @@ b.init(username, password, location, provider, function (err) {
     }
 
     console.log('[i] Pokecoin: ' + poke);
-    console.log('[i] Stardust: ' + profile.currency[1].amount);    
+    console.log('[i] Stardust: ' + profile.currency[1].amount);   
+
+    var moves = 30;
+    var target = {
+      latitude: minLat + 0.01,
+      longitude: minLong + 0.01
+    };
 
     setInterval(function () {
-      var locationCoords = b.GetLocationCoords();
-      locationCoords.latitude += Math.random() * 0.00005 + 0.00005;
-      locationCoords.longitude += Math.random() * 0.00005 + 0.00005;
+      var locationCoords = chooseCoordinates(b.GetLocationCoords(), target);
 
       b.UpdateLocation({ type: 'coords', coords: locationCoords }, function(err, loc){
         if(err){ throw err; }
-
         console.log('Updating Location [', loc.latitude, ', ', loc.longitude, ']');
+        moves--;
       });
+
+      if(moves <= 0){
+        target = chooseNewTarget();
+        moves = 20;
+        console.log('New Target Location: [', target.latitude, ',', target.longitude, ']');
+      }
 
       b.Heartbeat(function (err, hb) {
         if (err) {
