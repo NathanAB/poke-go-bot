@@ -13,9 +13,10 @@ var provider = 'ptc';
 
 // Interval between heartbeats in ms
 var HEARTBEAT_INTERVAL = 3000;
+var VERBOSE = false;
 
 var Pogo = new PokemonGO.Pokeio();
-Pogo.caughtPokemon = {};
+Pogo.caughtPokemon = [];
 Pogo.xpGained = 0;
 Pogo.pokestopsSpun = 0;
 Pogo.itemsGained = 0;
@@ -55,8 +56,10 @@ Pogo.init(username, password, location, provider, function (err) {
       var locationCoords = movement.chooseCoordinates(Pogo.GetLocationCoords(), target);
 
       Pogo.UpdateLocation({ type: 'coords', coords: locationCoords }, function(err, loc){
-        if(err){ throw err; }
-        console.log('Updating Location [', loc.latitude, ', ', loc.longitude, ']');
+        if(err) { throw err; }
+        if(VERBOSE) {
+          console.log('Updating Location [', loc.latitude, ', ', loc.longitude, ']');
+        }
         moves--;
       });
 
@@ -82,7 +85,9 @@ Pogo.init(username, password, location, provider, function (err) {
             nearby += ' ' + pokemon.name;
           }
         }
-        console.log(nearby);
+        if(VERBOSE) {
+          console.log(nearby);
+        }
 
         pokestops.spinPokestops(Pogo, hb, locationCoords);
 
