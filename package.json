@@ -1,14 +1,9 @@
 {
-  "name": "poke",
-  "version": "1.0.0",
-  "description": "",
+  "name": "poke-go-bot",
+  "version": "0.1.0",
+  "description": "Money Printer",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "dependencies": {
-    "pokemon-go-api": "git@github.com:Armax/Pokemon-GO-node-api.git#master"
-  },
-  "author": "",
-  "license": "ISC"
+    "pokemon-go-api": "git@github.com:ctang18/pokemon-go-node-api.git#master"
+  }
 }

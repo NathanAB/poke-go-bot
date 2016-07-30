@@ -7,5 +7,6 @@ Config:
     "type": "name",
     "name": "Dupont Circle Washington DC"
   }
+  "gmapsApiKey": "optional"
 }
 ```
