@@ -17,6 +17,13 @@ var HEARTBEAT_INTERVAL = 3000;
 var VERBOSE = false;
 
 var Pogo = new PokemonGO.Pokeio();
+
+// Promisify *some* functions (we'll wanna do promisifyAll eventually...)
+Pogo.init = Promise.promisify(Pogo.init);
+Pogo.GetInventory = Promise.promisify(Pogo.GetInventory);
+Pogo.GetProfile = Promise.promisify(Pogo.GetProfile);
+
+// Set globals
 Pogo.caughtPokemon = [];
 Pogo.xpGained = 0;
 Pogo.pokestopsSpun = 0;
@@ -26,17 +33,17 @@ console.time('Time Elapsed');
 
 Pogo.SetGmapsApiKey(config.gmapsApiKey);
 
-Promise.promisify(Pogo.init)(username, password, location, provider)
+Pogo.init(username, password, location, provider)
   .then(function initSuccess() {
     console.log('[i] Current location: ' + Pogo.playerInfo.locationName);
     console.log('[i] lat/long/alt: : ' + Pogo.playerInfo.latitude + ' ' + Pogo.playerInfo.longitude + ' ' + Pogo.playerInfo.altitude);
-    return Promise.promisify(Pogo.GetInventory)();
+    return Pogo.GetInventory();
   })
   .then(function logInventory(inventory) {
     // Figure out how to print out the inventory in a sane way
     // console.log(JSON.stringify(inventory, null, '\t'));
 
-    return Promise.promisify(Pogo.GetProfile)();
+    return Pogo.GetProfile();
   })
   .then(function logProfileAndBegin(profile) {
     console.log('[i] Username: ' + profile.username);
