@@ -1,4 +1,5 @@
 var PokemonGO = require('pokemon-go-node-api');
+var Promise = require('bluebird');
 
 var config = require('./config.json');
 var pokestops = require('./actions/pokestops');
@@ -25,25 +26,22 @@ console.time('Time Elapsed');
 
 Pogo.SetGmapsApiKey(config.gmapsApiKey);
 
-Pogo.init(username, password, location, provider, function (err) {
-  if (err) throw err;
+Promise.promisify(Pogo.init)(username, password, location, provider)
+  .then(function initSuccess() {
+    console.log('[i] Current location: ' + Pogo.playerInfo.locationName);
+    console.log('[i] lat/long/alt: : ' + Pogo.playerInfo.latitude + ' ' + Pogo.playerInfo.longitude + ' ' + Pogo.playerInfo.altitude);
+    return Promise.promisify(Pogo.GetInventory)();
+  })
+  .then(function logInventory(inventory) {
+    // Figure out how to print out the inventory in a sane way
+    // console.log(JSON.stringify(inventory, null, '\t'));
 
-  console.log('[i] Current location: ' + Pogo.playerInfo.locationName);
-  console.log('[i] lat/long/alt: : ' + Pogo.playerInfo.latitude + ' ' + Pogo.playerInfo.longitude + ' ' + Pogo.playerInfo.altitude);
-
-  Pogo.GetProfile(function (err, profile) {
-    if (err) throw err;
-
+    return Promise.promisify(Pogo.GetProfile)();
+  })
+  .then(function logProfileAndBegin(profile) {
     console.log('[i] Username: ' + profile.username);
     console.log('[i] Poke Storage: ' + profile.poke_storage);
     console.log('[i] Item Storage: ' + profile.item_storage);
-
-    var poke = 0;
-    if (profile.currency[0].amount) {
-      poke = profile.currency[0].amount;
-    }
-
-    console.log('[i] Pokecoin: ' + poke);
     console.log('[i] Stardust: ' + profile.currency[1].amount);   
 
     var moves = 30;
@@ -100,8 +98,10 @@ Pogo.init(username, password, location, provider, function (err) {
         }
       });
     }, HEARTBEAT_INTERVAL);
+  })
+  .catch(function pogoFailure(err) {
+    throw err;
   });
-});
 
 function exitHandler(){
   console.log('\n');

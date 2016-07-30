@@ -4,6 +4,7 @@
   "description": "Money Printer",
   "main": "index.js",
   "dependencies": {
+    "bluebird": "^3.4.1",
     "lodash": "^4.14.1",
     "pokemon-go-api": "git@github.com:ctang18/pokemon-go-node-api.git#master"
   }
