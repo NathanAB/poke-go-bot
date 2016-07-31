@@ -18,6 +18,19 @@ function move(Pogo) {
     Pogo.currentDest = Pogo.currentDest === (Pogo.route.length - 1) ? 0 : Pogo.currentDest + 1;
     destCoords = Pogo.route[Pogo.currentDest];
     Pogo.routeWaypointsHit++;
+
+    // Print level and xp as a status update
+    Pogo.GetInventory()
+      .then(function logInventory(inventory) {
+        var playerStatsKey = _.findKey(inventory.inventory_delta.inventory_items, 'inventory_item_data.player_stats');
+        var playerStats = inventory.inventory_delta.inventory_items[playerStatsKey].inventory_item_data.player_stats;
+
+        if(Pogo.playerLevel < playerStats.level) {
+          console.log('LEVEL UP!!! Now level', Pogo.playerLevel = playerStats.level);
+        }
+
+        console.log('Total experience gained:', Pogo.xpGained);
+      });
   }
 
   // Calculate delta with some randomness
