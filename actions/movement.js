@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var utils = require('../utils');
-var Inventory = require('./inventory');
+var InventoryManagement = require('./inventory');
 
 var WALK_SPEED = 0.00005;
 var VARIANCE = 0.00001;
@@ -20,7 +20,7 @@ function move(Pogo) {
     destCoords = Pogo.route[Pogo.currentDest];
     Pogo.routeWaypointsHit++;
 
-    Inventory.manageInventory(Pogo);
+    InventoryManagement.manageInventory(Pogo);
 
     // This funcion should be util
     // Print level and xp as a status update
