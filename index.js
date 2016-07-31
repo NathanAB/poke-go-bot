@@ -87,7 +87,7 @@ Pogo.init(username, password, location, provider)
     console.log('Beginning route: ' + config.route);
     setInterval(function () {
       var currentCoords = Movement.move(Pogo);
-
+      try { 
       Pogo.Heartbeat(function (err, hb) {
         if (err) console.log(err);
 
@@ -110,6 +110,9 @@ Pogo.init(username, password, location, provider)
         }
 
       });
+      } catch(err) {
+        consle.log(err);
+      }
     }, HEARTBEAT_INTERVAL);
   })
   .catch(function pogoFailure(err) {
