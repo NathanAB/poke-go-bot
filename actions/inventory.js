@@ -1,4 +1,6 @@
 var _ = require('lodash');
+var Promise = require('bluebird');
+
 var items = require('../items.json');
 
 /**
@@ -8,21 +10,38 @@ var items = require('../items.json');
  */
 
 function manageInventory(Pogo) {
+  return new Promise(function (resolve, reject) {
+    console.log('Running Inventory Management...');
+    var i = 0;
+    var max = Pogo.playerInventory.length;
 
-  _.forEach(Pogo.playerInventory, function (item) {
-    var itemId = item.inventory_item_data.item.item;
-    var itemCount = item.inventory_item_data.item.count;
-    var itemMax = items[itemId].max;
-    var itemDiff = itemCount - itemMax;
+    setInterval(function processItem() {
+      if(i >= max) {
+        console.log('Finished Inventory Management!\n');
+        resolve();
+        return false;
+      }
 
-    if (itemCount > itemMax) {
-      Pogo.DropItem(itemId, itemDiff, function (err, res) {
-        if (err) { console.log(err); return; }
-        console.log('Dropped ' + itemDiff + ' ' + items[itemId].name + '(s). Previous: ' + itemCount + ' Max: ' + itemMax);
-        return;
-      });
-    }
+      manageItem(Pogo, Pogo.playerInventory[i]);
+
+      ++i;
+    }, 1000);
   });
+}
+
+function manageItem(Pogo, item) {
+  var itemId = item.inventory_item_data.item.item;
+  var itemCount = item.inventory_item_data.item.count;
+  var itemMax = items[itemId].max;
+  var itemDiff = itemCount - itemMax;
+
+  if (itemCount > itemMax) {
+    Pogo.DropItem(itemId, itemDiff, function (err, res) {
+      if (err) { console.log(err); return; }
+      console.log('Dropped ' + itemDiff + ' ' + items[itemId].name + '(s). Previous: ' + itemCount + ' Max: ' + itemMax);
+      return;
+    });
+  }
 }
 
 function printInventory(Pogo) {
@@ -38,5 +57,6 @@ function printInventory(Pogo) {
 
 module.exports = {
   manageInventory,
+  manageItem,
   printInventory
 };

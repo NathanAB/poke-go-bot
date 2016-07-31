@@ -76,9 +76,9 @@ Pogo.init(username, password, location, provider)
     if (VERBOSE) PokemonManagement.printPokemonGrouped(Pogo);
     if (VERBOSE) InventoryManagement.printInventory(Pogo);
 
-
-    InventoryManagement.manageInventory(Pogo);
-
+    return InventoryManagement.manageInventory(Pogo);    
+  })
+  .then(function runPokemonManagement() {
     return PokemonManagement.managePokemon(Pogo);
   })
   .then(function beginRoute() {

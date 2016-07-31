@@ -4,13 +4,14 @@ var Catching = require('./catching');
 
 function managePokemon(Pogo) {
   return new Promise(function (resolve, reject) {
-    console.log('Cleaning up Pokemon inventory...');
+    console.log('Running Pokemon Management...');
     var i = 0;
     var max = Pogo.playerPokemon.length;
 
     // Process pokemon every 1000ms
     setInterval(function processPokemon() {
       if(i >= max) {
+        console.log('Finished Pokemong Management!\n');
         resolve();
         return false;
       }
@@ -23,11 +24,10 @@ function managePokemon(Pogo) {
       var pokemonData = Pogo.pokemonlist[pokedexId - 1];
 
       // We won't touch 1000+ cp pokemon
-      if(cp > 1000) {
-        return;
+      if(cp < 1000) {
+        Catching.evolveOrTransferPokemon(Pogo, pokemonData, pokemonId);
       }
-
-      Catching.evolveOrTransferPokemon(Pogo, pokemonData, pokemonId);
+        
       ++i;
     }, 1000);
   });
