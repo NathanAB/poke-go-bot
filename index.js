@@ -8,14 +8,9 @@ var pokestops = require('./actions/pokestops');
 var catching = require('./actions/catching');
 var movement = require('./actions/movement');
 
-<<<<<<< HEAD
 var username = process.env.PGO_USER || config.user;
 var password = process.env.PGO_PASS || config.pass;
 var location = config.location;
-=======
-var username = config.user;
-var password = config.pass;
->>>>>>> e3b96387410c7e308a3d0cbc2f8aff621976fbbb
 var gmapsApiKey = config.gmapsApiKey;
 var route = routes[config.route];
 var location = {
