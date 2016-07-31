@@ -1,24 +1,36 @@
 var _ = require('lodash');
-
+var Promise = require('bluebird');
+var Catching = require('./catching');
 
 function managePokemon(Pogo) {
-  /*
-  // Attempt to evolve all caught pokemon 
-  _.forEach(Pogo.playerPokemon, function evolve(pokemon) {
-    setTimeout(function () {
-      var id = pokemon.inventory_item_data.pokemon.id;
-      var pokeId = pokemon.inventory_item_data.pokemon.pokemon_id;
+  return new Promise(function (resolve, reject) {
+    console.log('Cleaning up Pokemon inventory...');
+    var i = 0;
+    var max = Pogo.playerPokemon.length;
 
-      //console.log(id.low);
-
-      if (pokeId === 19) {
-        Pogo.EvolvePokemon(id, function evolutionRes(err, res) {
-          if (err && err !== 'No result') { return console.log(err); }
-          console.log(res);
-        });
+    // Process pokemon every 1000ms
+    setInterval(function processPokemon() {
+      if(i >= max) {
+        resolve();
+        return false;
       }
+      
+      var pokemon = Pogo.playerPokemon[i].inventory_item_data.pokemon;
+      // console.log(pokemon);
+      var pokemonId = pokemon.id;
+      var pokedexId = pokemon.pokemon_id;
+      var cp = pokemon.cp;
+      var pokemonData = Pogo.pokemonlist[pokedexId - 1];
+
+      // We won't touch 1000+ cp pokemon
+      if(cp > 1000) {
+        return;
+      }
+
+      Catching.evolveOrTransferPokemon(Pogo, pokemonData, pokemonId);
+      ++i;
     }, 1000);
-  });*/
+  });
 }
 
 function printPokemon(Pogo) {

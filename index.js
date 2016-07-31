@@ -76,11 +76,10 @@ Pogo.init(username, password, location, provider)
     if (VERBOSE) PokemonManagement.printPokemonGrouped(Pogo);
     if (VERBOSE) InventoryManagement.printInventory(Pogo);
 
-    PokemonManagement.managePokemon(Pogo);
 
     InventoryManagement.manageInventory(Pogo);
 
-    return Inventory.managePokemon(Pogo);
+    return PokemonManagement.managePokemon(Pogo);
   })
   .then(function beginRoute() {
     console.log('Beginning route: ' + config.route);
