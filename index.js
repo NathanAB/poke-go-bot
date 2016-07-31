@@ -4,11 +4,11 @@ var Promise = require('bluebird');
 
 var config = require('./config.json');
 var routes = require('./routes.json');
-var pokestops = require('./actions/pokestops');
-var catching = require('./actions/catching');
-var movement = require('./actions/movement');
+var Pokestops = require('./actions/pokestops');
+var Catching = require('./actions/catching');
+var Movement = require('./actions/movement');
 var Inventory = require('./actions/inventory');
-var utils = require('./utils');
+var Utils = require('./utils');
 
 var username = process.env.PGO_USER || config.user;
 var password = process.env.PGO_PASS || config.pass;
@@ -23,7 +23,7 @@ var provider = 'ptc';
 
 // Interval between heartbeats in ms
 var HEARTBEAT_INTERVAL = 2000;
-var VERBOSE = false;
+var VERBOSE = true;
 var timeStart = process.hrtime();
 
 var Pogo = new PokemonGO.Pokeio();
@@ -70,28 +70,30 @@ Pogo.init(username, password, location, provider)
     console.log('[i] Level: ' + Pogo.playerLevel);
     console.log('[i] Poke Storage: ' + _.size(Pogo.playerPokemon) + ' / ' + profile.poke_storage);
     console.log('[i] Item Storage: ' + _.sumBy(Pogo.playerInventory, 'inventory_item_data.item.count') + ' / ' + profile.item_storage);
-    console.log('[i] Stardust: ' + profile.currency[1].amount);
+    console.log('[i] Stardust: ' + profile.currency[1].amount + '\n');
+
+    if (VERBOSE) Inventory.printInventory(Pogo);
 
     Inventory.manageInventory(Pogo);
 
     console.log('Beginning route: ' + config.route);
     setInterval(function () {
-      var currentCoords = movement.move(Pogo);
+      var currentCoords = Movement.move(Pogo);
 
       Pogo.Heartbeat(function (err, hb) {
         if (err) console.log(err);
 
         // Print nearby pokemon
-        if (VERBOSE) utils.printNearby(Pogo, hb);
+        if (VERBOSE) Utils.printNearby(Pogo, hb);
 
-        pokestops.spinPokestops(Pogo, hb, currentCoords);
+        Pokestops.spinPokestops(Pogo, hb, currentCoords);
 
         try {
           // Show MapPokemons (catchable) & catch
           for (var i = hb.cells.length - 1; i >= 0; i--) {
             for (var j = hb.cells[i].MapPokemon.length - 1; j >= 0; j--) {   // use async lib with each or eachSeries should be better :)
               var currentPokemon = hb.cells[i].MapPokemon[j];
-              catching.engageAndCatchPokemon(Pogo, currentPokemon);
+              Catching.engageAndCatchPokemon(Pogo, currentPokemon);
             }
           }
         } catch (error) {
@@ -113,7 +115,7 @@ function exitHandler() {
 
   console.log(timeElapsed[0] + 's');
   console.log('Pokemon Caught: ', Pogo.caughtPokemon.length);
-  utils.printObject(_.countBy(Pogo.caughtPokemon));
+  Utils.printObject(_.countBy(Pogo.caughtPokemon));
   console.log('Pokemon Evolved: ', Pogo.evolves);
   console.log('Pokemon Transferred: ', Pogo.transfers);
   console.log('Pokestops Spun: ', Pogo.pokestopsSpun);
@@ -124,4 +126,4 @@ function exitHandler() {
 }
 
 process.on('SIGINT', exitHandler);
-process.on('uncaughtException', exitHandler);
+// process.on('uncaughtException', exitHandler);
