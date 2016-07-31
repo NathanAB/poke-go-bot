@@ -79,9 +79,11 @@ Pogo.init(username, password, location, provider)
     return InventoryManagement.manageInventory(Pogo);    
   })
   .then(function runPokemonManagement() {
+    console.log('Finished Inventory Management!\n');
     return PokemonManagement.managePokemon(Pogo);
   })
   .then(function beginRoute() {
+    console.log('Finished Pokemon Management!\n');
     console.log('Beginning route: ' + config.route);
     setInterval(function () {
       var currentCoords = Movement.move(Pogo);

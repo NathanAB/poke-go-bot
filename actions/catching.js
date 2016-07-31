@@ -27,6 +27,8 @@ function engageAndCatchPokemon(Pogo, pokemon) {
     }
   }
   
+  // To Implement: Use Razz Berry and Greatball for rare pokemon
+
   Pogo.EncounterPokemon(pokemon, function (suc, dat) {
     Pogo.CatchPokemon(pokemon, 1, 1.950, 1, 1, _catchPokemonHandler);
   });
@@ -48,12 +50,11 @@ function evolveOrTransferPokemon(Pogo, pokemon, pokemonId) {
       } else if(res.Result === 3) {
         // Transfer when evolvable but not enough candy
         Pogo.TransferPokemon(pokemonId, function(err, res) {
-          if(err) {
-            return console.log(err);
+          if(err) { return console.log(err);}
+          if(res.Status === 1) {
+            Pogo.transfers++;
+            console.log('Smelted ' + pokemon.name + ' down for candy');
           }
-
-          Pogo.transfers++;
-          console.log('Smelted ' + pokemon.name + ' down for candy');
         });
       }
 

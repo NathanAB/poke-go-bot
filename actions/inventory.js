@@ -17,7 +17,6 @@ function manageInventory(Pogo) {
 
     setInterval(function processItem() {
       if(i >= max) {
-        console.log('Finished Inventory Management!\n');
         resolve();
         return false;
       }
