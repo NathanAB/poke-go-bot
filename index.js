@@ -22,7 +22,7 @@ var provider = 'ptc';
 
 // Interval between heartbeats in ms
 var HEARTBEAT_INTERVAL = 3000;
-var VERBOSE = true;
+var VERBOSE = false;
 var timeStart = process.hrtime();
 
 var Pogo = new PokemonGO.Pokeio();
@@ -69,13 +69,7 @@ Pogo.init(username, password, location, provider)
     console.log('[i] Item Storage: ' + _.sumBy(Pogo.playerInventory, 'inventory_item_data.item.count') + ' / ' + profile.item_storage);
     console.log('[i] Stardust: ' + profile.currency[1].amount);
 
-    var moves = 30;
-    var target = {
-      latitude: movement.minLat + 0.01,
-      longitude: movement.minLong + 0.01
-    };
-
-    console.log('Beginning route ' + config.route);
+    console.log('Beginning route: ' + config.route);
     setInterval(function () {
       var currentCoords = movement.move(Pogo);
 
@@ -87,13 +81,19 @@ Pogo.init(username, password, location, provider)
 
         pokestops.spinPokestops(Pogo, hb, currentCoords);
 
-        // Show MapPokemons (catchable) & catch
-        for (var i = hb.cells.length - 1; i >= 0; i--) {
-          for (var j = hb.cells[i].MapPokemon.length - 1; j >= 0; j--) {   // use async lib with each or eachSeries should be better :)
-            var currentPokemon = hb.cells[i].MapPokemon[j];
-            catching.engageAndCatchPokemon(Pogo, currentPokemon);
+        try {
+          // Show MapPokemons (catchable) & catch
+          for (var i = hb.cells.length - 1; i >= 0; i--) {
+            for (var j = hb.cells[i].MapPokemon.length - 1; j >= 0; j--) {   // use async lib with each or eachSeries should be better :)
+              var currentPokemon = hb.cells[i].MapPokemon[j];
+              catching.engageAndCatchPokemon(Pogo, currentPokemon);
+            }
           }
+        } catch (error) {
+          console.log(error);
+          return;
         }
+
       });
     }, HEARTBEAT_INTERVAL);
   })
