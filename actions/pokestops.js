@@ -9,6 +9,7 @@ var items = require('../items.json');
  * @param {Location}  coords    Current player coordinates
  */
 function spinPokestops(Pogo, hb, coords) {
+  try {
   // Show nearby pokestops
   hb.cells.forEach(function searchCell(cell) {
     cell.Fort.forEach(function processFort(fort) {
@@ -37,6 +38,9 @@ function spinPokestops(Pogo, hb, coords) {
       }
     });
   });
+  } catch(err) {
+    console.log(err);
+  }
 }
 
 module.exports = {
