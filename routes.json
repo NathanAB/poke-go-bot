@@ -16,5 +16,27 @@
       "latitude": 38.888617,
       "longitude": -77.031840
     }
+  ],
+  "bryantParkNY": [
+    {
+      "latitude": 40.754394,
+      "longitude": -73.983934
+    },
+    {
+      "latitude": 40.753857,
+      "longitude": -73.982653
+    },
+    {
+      "latitude": 40.752994,
+      "longitude": -73.981781
+    },
+    {
+      "latitude": 40.753123,
+      "longitude": -73.983469
+    },
+    {
+      "latitude": 40.753627,
+      "longitude": -73.984623
+    }
   ]
 }
