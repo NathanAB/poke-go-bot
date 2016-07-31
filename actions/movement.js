@@ -28,11 +28,15 @@ function move(Pogo) {
       .then(function logInventory(inventory) {
         var playerStatsKey = _.findKey(inventory.inventory_delta.inventory_items, 'inventory_item_data.player_stats');
         var playerStats = inventory.inventory_delta.inventory_items[playerStatsKey].inventory_item_data.player_stats;
+        var playerInventory = _.filter(inventory.inventory_delta.inventory_items, 'inventory_item_data.item');
 
+        // Update inventory
+        Pogo.playerInventory = playerInventory;
+
+        // Report levels up and XP
         if(Pogo.playerLevel < playerStats.level) {
           console.log('LEVEL UP!!! Now level', Pogo.playerLevel = playerStats.level);
         }
-
         console.log('Total experience gained:', Pogo.xpGained);
       });
   }
