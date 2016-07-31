@@ -7,7 +7,8 @@ var routes = require('./routes.json');
 var Pokestops = require('./actions/pokestops');
 var Catching = require('./actions/catching');
 var Movement = require('./actions/movement');
-var Inventory = require('./actions/inventory');
+var InventoryManagement = require('./actions/inventory');
+var PokemonManagement = require('./actions/pokemon');
 var Utils = require('./utils');
 
 var username = process.env.PGO_USER || config.user;
@@ -72,9 +73,12 @@ Pogo.init(username, password, location, provider)
     console.log('[i] Item Storage: ' + _.sumBy(Pogo.playerInventory, 'inventory_item_data.item.count') + ' / ' + profile.item_storage);
     console.log('[i] Stardust: ' + profile.currency[1].amount + '\n');
 
-    if (VERBOSE) Inventory.printInventory(Pogo);
+    if (VERBOSE) PokemonManagement.printPokemonGrouped(Pogo);
+    if (VERBOSE) InventoryManagement.printInventory(Pogo);
 
-    Inventory.manageInventory(Pogo);
+    PokemonManagement.managePokemon(Pogo);
+
+    InventoryManagement.manageInventory(Pogo);
 
     console.log('Beginning route: ' + config.route);
     setInterval(function () {
@@ -121,6 +125,7 @@ function exitHandler() {
   console.log('Pokestops Spun: ', Pogo.pokestopsSpun);
   console.log('# Items Gained: ', Pogo.itemsGained);
   console.log('XP Gained: ~', Pogo.xpGained);
+  console.log(_.floor((Pogo.xpGained / timeElapsed[0]), 2) + 'XP/s');
   console.log('Route waypoints hit:' + Pogo.routeWaypointsHit);
   process.exit();
 }
