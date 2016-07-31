@@ -31,7 +31,7 @@ function spinPokestops(Pogo, hb, coords) {
             Pogo.pokestopsSpun++;
             Pogo.itemsGained += res.items_awarded.length;
             res.items_awarded.forEach(function printLoot(item) {
-              console.log('-' ,items[item.item_id]);
+              console.log('-' ,items[item.item_id].name);
             });
           }
         });

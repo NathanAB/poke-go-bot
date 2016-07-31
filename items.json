@@ -1,32 +1,122 @@
 {
-  "0": "UNKNOWN",
-  "1": "Pokeball",
-  "2": "Greatball",
-  "3": "Ultraball",
-  "4": "Masterball",
-  "101": "Potion",
-  "102": "Super Potion",
-  "103": "Hyper Potion",
-  "104": "Max Potion",
-  "201": "Revive",
-  "202": "Max Revive",
-  "301": "Lucky Egg",
-  "401": "Incense Ordinary",
-  "402": "Incense Spicy",
-  "403": "Incense Cool",
-  "404": "Incense Floral",
-  "501": "Troy Disk",
-  "602": "X Attack",
-  "603": "X Defense",
-  "604": "X Miracle",
-  "701": "Razz Berry",
-  "702": "Bluk Berry",
-  "703": "Nanab Berry",
-  "704": "Wepar Berry",
-  "705": "Pinap Berry",
-  "801": "Special Camera",
-  "901": "Incubator Basic Unlimited",
-  "902": "Incubator Basic",
-  "1001": "Pokemon Storage Upgrade",
-  "1002": "Item Storage Upgrade"
+  "0": {
+    "name": "UNKNOWN",
+    "max": 999
+  },
+  "1": {
+    "name": "Pokeball",
+    "max": 100
+  },
+  "2": {
+    "name": "Greatball",
+    "max": 100
+  },
+  "3": {
+    "name": "Ultraball",
+    "max": 999
+  },
+  "4": {
+    "name": "Masterball",
+    "max": 999
+  },
+  "101": {
+    "name": "Potion",
+    "max": 0
+  },
+  "102": {
+    "name": "Super Potion",
+    "max": 0
+  },
+  "103": {
+    "name": "Hyper Potion",
+    "max": 30
+  },
+  "104": {
+    "name": "Max Potion",
+    "max": 30
+  },
+  "201": {
+    "name": "Revive",
+    "max": 30
+  },
+  "202": {
+    "name": "Max Revive",
+    "max": 30
+  },
+  "301": {
+    "name": "Lucky Egg",
+    "max": 999
+  },
+  "401": {
+    "name": "Incense Ordinary",
+    "max": 999
+  },
+  "402": {
+    "name": "Incense Spicy",
+    "max": 999
+  },
+  "403": {
+    "name": "Incense Cool",
+    "max": 999
+  },
+  "404": {
+    "name": "Incense Floral",
+    "max": 999
+  },
+  "501": {
+    "name": "Troy Disk",
+    "max": 999
+  },
+  "602": {
+    "name": "X Attack",
+    "max": 999
+  },
+  "603": {
+    "name": "X Defense",
+    "max": 999
+  },
+  "604": {
+    "name": "X Miracle",
+    "max": 999
+  },
+  "701": {
+    "name": "Razz Berry",
+    "max": 20
+  },
+  "702": {
+    "name": "Bluk Berry",
+    "max": 20
+  },
+  "703": {
+    "name": "Nanab Berry",
+    "max": 20
+  },
+  "704": {
+    "name": "Wepar Berry",
+    "max": 20
+  },
+  "705": {
+    "name": "Pinap Berry",
+    "max": 20
+  },
+  "801": {
+    "name": "Special Camera",
+    "max": 999
+  },
+  "901": {
+    "name": "Incubator Basic Unlimited",
+    "max": 999
+  },
+  "902": {
+    "name": "Incubator Basic",
+    "max": 999 
+  },
+  "1001": {
+    "name": "Pokemon Storage Upgrade",
+    "max": 999
+  },
+  "1002": {
+    "name": "Item Storage Upgrade",
+    "max": 999
+  }
 }

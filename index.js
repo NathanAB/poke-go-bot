@@ -7,6 +7,7 @@ var routes = require('./routes.json');
 var pokestops = require('./actions/pokestops');
 var catching = require('./actions/catching');
 var movement = require('./actions/movement');
+var Inventory = require('./actions/inventory');
 var utils = require('./utils');
 
 var username = process.env.PGO_USER || config.user;
@@ -68,6 +69,8 @@ Pogo.init(username, password, location, provider)
     console.log('[i] Poke Storage: ' + _.size(Pogo.playerPokemon) + ' / ' + profile.poke_storage);
     console.log('[i] Item Storage: ' + _.sumBy(Pogo.playerInventory, 'inventory_item_data.item.count') + ' / ' + profile.item_storage);
     console.log('[i] Stardust: ' + profile.currency[1].amount);
+
+    Inventory.manageInventory(Pogo);
 
     console.log('Beginning route: ' + config.route);
     setInterval(function () {
