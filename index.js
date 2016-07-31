@@ -7,6 +7,7 @@ var routes = require('./routes.json');
 var pokestops = require('./actions/pokestops');
 var catching = require('./actions/catching');
 var movement = require('./actions/movement');
+var utils = require('./utils');
 
 var username = process.env.PGO_USER || config.user;
 var password = process.env.PGO_PASS || config.pass;
@@ -21,7 +22,7 @@ var provider = 'ptc';
 
 // Interval between heartbeats in ms
 var HEARTBEAT_INTERVAL = 3000;
-var VERBOSE = false;
+var VERBOSE = true;
 var timeStart = process.hrtime();
 
 var Pogo = new PokemonGO.Pokeio();
@@ -50,20 +51,23 @@ Pogo.init(username, password, location, provider)
     return Pogo.GetInventory();
   })
   .then(function logInventory(inventory) {
-    // Figure out how to print out the inventory in a sane way
-    // console.log(JSON.stringify(inventory, null, '\t'));
+    var playerStatsKey = _.findKey(inventory.inventory_delta.inventory_items, 'inventory_item_data.player_stats');
+    var playerStats = inventory.inventory_delta.inventory_items[playerStatsKey].inventory_item_data.player_stats;
+    var playerPokemon = _.filter(inventory.inventory_delta.inventory_items, 'inventory_item_data.pokemon');
+    var playerInventory = _.filter(inventory.inventory_delta.inventory_items, 'inventory_item_data.item');
 
-    console.log(_.size(inventory.inventory_delta.inventory_items));
-    var foundKey = _.findKey(inventory.inventory_delta.inventory_items, 'inventory_item_data.player_stats');
-    console.log(inventory.inventory_delta.inventory_items[foundKey]);
+    Pogo.playerLevel = playerStats.level;
+    Pogo.playerPokemon = playerPokemon;
+    Pogo.playerInventory = playerInventory;
 
     return Pogo.GetProfile();
   })
   .then(function logProfileAndBegin(profile) {
     console.log('[i] Username: ' + profile.username);
-    console.log('[i] Poke Storage: ' + profile.poke_storage);
-    console.log('[i] Item Storage: ' + profile.item_storage);
-    console.log('[i] Stardust: ' + profile.currency[1].amount);   
+    console.log('[i] Level: ' + Pogo.playerLevel);
+    console.log('[i] Poke Storage: ' + _.size(Pogo.playerPokemon) + ' / ' + profile.poke_storage);
+    console.log('[i] Item Storage: ' + _.sumBy(Pogo.playerInventory, 'inventory_item_data.item.count') + ' / ' + profile.item_storage);
+    console.log('[i] Stardust: ' + profile.currency[1].amount);
 
     var moves = 30;
     var target = {
@@ -71,33 +75,20 @@ Pogo.init(username, password, location, provider)
       longitude: movement.minLong + 0.01
     };
 
-    console.log('Beginning route ' + config.route);   
+    console.log('Beginning route ' + config.route);
     setInterval(function () {
       var currentCoords = movement.move(Pogo);
 
       Pogo.Heartbeat(function (err, hb) {
-        if (err) {
-          console.log(err);
-        }
+        if (err) console.log(err);
 
         // Print nearby pokemon
-        var nearby = 'Nearby:';
-        for (var i = hb.cells.length - 1; i >= 0; i--) {
-          // console.log(JSON.stringify(hb.cells[i], null, '\t'));
-          if (hb.cells[i].NearbyPokemon[0]) {
-            var pokemon = Pogo.pokemonlist[parseInt(hb.cells[i].NearbyPokemon[0].PokedexNumber) - 1];
-            // console.log('[+] There is a ' + pokemon.name + ' at ' + hb.cells[i].NearbyPokemon[0].DistanceMeters.toString() + ' meters');
-            nearby += ' ' + pokemon.name;
-          }
-        }
-        if(VERBOSE) {
-          console.log(nearby);
-        }
+        if (VERBOSE) utils.printNearby(Pogo, hb);
 
         pokestops.spinPokestops(Pogo, hb, currentCoords);
 
         // Show MapPokemons (catchable) & catch
-        for (i = hb.cells.length - 1; i >= 0; i--) {
+        for (var i = hb.cells.length - 1; i >= 0; i--) {
           for (var j = hb.cells[i].MapPokemon.length - 1; j >= 0; j--) {   // use async lib with each or eachSeries should be better :)
             var currentPokemon = hb.cells[i].MapPokemon[j];
             catching.engageAndCatchPokemon(Pogo, currentPokemon);
@@ -110,26 +101,19 @@ Pogo.init(username, password, location, provider)
     throw err;
   });
 
-function exitHandler(){
-
+function exitHandler() {
   var timeElapsed = process.hrtime(timeStart);
 
   console.log('\n');
 
-  console.log(timeElapsed[0]+ 's');
+  console.log(timeElapsed[0] + 's');
   console.log('Pokemon Caught: ', Pogo.caughtPokemon.length);
-  printObject(_.countBy(Pogo.caughtPokemon));
+  utils.printObject(_.countBy(Pogo.caughtPokemon));
   console.log('Pokestops Spun: ', Pogo.pokestopsSpun);
   console.log('# Items Gained: ', Pogo.itemsGained);
   console.log('XP Gained: ~', Pogo.xpGained);
   console.log('Route waypoints hit:' + Pogo.routeWaypointsHit);
   process.exit();
-}
-
-function printObject(obj){
-  for(var key in obj){
-    console.log(key + ' x' + obj[key]);
-  }
 }
 
 process.on('SIGINT', exitHandler);

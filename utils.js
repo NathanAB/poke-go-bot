@@ -20,6 +20,27 @@ function deg2rad(deg) {
   return deg * (Math.PI / 180);
 }
 
+function printNearby(Pogo, hb) {
+  var nearby = 'Nearby:';
+  for (var i = hb.cells.length - 1; i >= 0; i--) {
+    // console.log(JSON.stringify(hb.cells[i], null, '\t'));
+    if (hb.cells[i].NearbyPokemon[0]) {
+      var pokemon = Pogo.pokemonlist[parseInt(hb.cells[i].NearbyPokemon[0].PokedexNumber) - 1];
+      // console.log('[+] There is a ' + pokemon.name + ' at ' + hb.cells[i].NearbyPokemon[0].DistanceMeters.toString() + ' meters');
+      nearby += ' ' + pokemon.name;
+    }
+  }
+  console.log(nearby);
+}
+
+function printObject(obj) {
+  for (var key in obj) {
+    console.log(key + ' x' + obj[key]);
+  }
+}
+
 module.exports = {
-  getDistance
+  getDistance,
+  printNearby,
+  printObject
 };
