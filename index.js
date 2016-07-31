@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var PokemonGO = require('pokemon-go-node-api');
 var Promise = require('bluebird');
 
@@ -6,8 +7,8 @@ var pokestops = require('./actions/pokestops');
 var catching = require('./actions/catching');
 var movement = require('./actions/movement');
 
-var username = config.user;
-var password = config.pass;
+var username = process.env.PGO_USER || config.user;
+var password = process.env.PGO_PASS || config.pass;
 var location = config.location;
 var gmapsApiKey = config.gmapsApiKey;
 var provider = 'ptc';
@@ -15,6 +16,7 @@ var provider = 'ptc';
 // Interval between heartbeats in ms
 var HEARTBEAT_INTERVAL = 3000;
 var VERBOSE = false;
+var timeStart = process.hrtime();
 
 var Pogo = new PokemonGO.Pokeio();
 
@@ -29,8 +31,6 @@ Pogo.xpGained = 0;
 Pogo.pokestopsSpun = 0;
 Pogo.itemsGained = 0;
 
-console.time('Time Elapsed');
-
 Pogo.SetGmapsApiKey(config.gmapsApiKey);
 
 Pogo.init(username, password, location, provider)
@@ -42,6 +42,10 @@ Pogo.init(username, password, location, provider)
   .then(function logInventory(inventory) {
     // Figure out how to print out the inventory in a sane way
     // console.log(JSON.stringify(inventory, null, '\t'));
+
+    console.log(_.size(inventory.inventory_delta.inventory_items));
+    var foundKey = _.findKey(inventory.inventory_delta.inventory_items, 'inventory_item_data.player_stats');
+    console.log(inventory.inventory_delta.inventory_items[foundKey]);
 
     return Pogo.GetProfile();
   })
@@ -111,13 +115,23 @@ Pogo.init(username, password, location, provider)
   });
 
 function exitHandler(){
+
+  var timeElapsed = process.hrtime(timeStart);
+
   console.log('\n');
-  console.timeEnd('Time Elapsed');
-  console.log('Pokemon Caught: ', JSON.stringify(Pogo.caughtPokemon));
+  console.log(timeElapsed[0]+ 's');
+  console.log('Pokemon Caught: ', Pogo.caughtPokemon.length);
+  printObject(_.countBy(Pogo.caughtPokemon));
   console.log('Pokestops Spun: ', Pogo.pokestopsSpun);
   console.log('# Items Gained: ', Pogo.itemsGained);
   console.log('XP Gained: ~', Pogo.xpGained);
   process.exit();
+}
+
+function printObject(obj){
+  for(var key in obj){
+    console.log(key + ' x' + obj[key]);
+  }
 }
 
 process.on('SIGINT', exitHandler);
