@@ -10,10 +10,10 @@ var VARIANCE = 0.00001;
 function move(Pogo) {
   var currentCoords = Pogo.GetLocationCoords();
   var destCoords = Pogo.route[Pogo.currentDest];
-  var distToDest = utils.getDistance(currentCoords.Latitude, currentCoords.Longitude, destCoords.latitude, destCoords.longitude);
+  var distToDest = utils.getDistance(currentCoords.latitude, currentCoords.longitude, destCoords.latitude, destCoords.longitude);
 
-  // If we are at our destination, switch destination to next point in the route
-  if(distToDest < 50) {
+  // If we are at/near our destination, switch destination to next point in the route
+  if(distToDest < 25) {
     console.log('--- Arrived at route waypoint ' + Pogo.currentDest + ' ---');
     Pogo.currentDest = Pogo.currentDest === (Pogo.route.length - 1) ? 0 : Pogo.currentDest + 1;
     destCoords = Pogo.route[Pogo.currentDest];
