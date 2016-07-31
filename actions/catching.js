@@ -35,31 +35,36 @@ function engageAndCatchPokemon(Pogo, pokemon) {
 function evolveOrTransferPokemon(Pogo, pokemon, pokemonId) {
 
   // Attempt to evolve all caught pokemon
-  Pogo.EvolvePokemon(pokemonId, function evolutionRes(err, res) {
-    if(err && err !== 'No result') {
-      return console.log(err);
-    }
+  try {
+    Pogo.EvolvePokemon(pokemonId, function evolutionRes(err, res) {
+      if(err) {
+        return console.log(err);
+      }
 
-    if(err === 'No result' || res.Result === 1) {
-      console.log('Successfully evolved ' + pokemon.name);
-      Pogo.xpGained += 500;
-      Pogo.evolves++;
-    } else if(res.Result === 3) {
-      // Transfer when evolvable but not enough candy
-      Pogo.TransferPokemon(pokemonId, function(err, res) {
-        if(err && err !== 'No result') {
-          return console.log(err);
-        }
+      if(res.Result === 1) {
+        console.log('Successfully evolved ' + pokemon.name);
+        Pogo.xpGained += 500;
+        Pogo.evolves++;
+      } else if(res.Result === 3) {
+        // Transfer when evolvable but not enough candy
+        Pogo.TransferPokemon(pokemonId, function(err, res) {
+          if(err) {
+            return console.log(err);
+          }
 
-        Pogo.transfers++;
-        console.log('Smelted ' + pokemon.name + ' down for candy');
-      });
-    }
+          Pogo.transfers++;
+          console.log('Smelted ' + pokemon.name + ' down for candy');
+        });
+      }
 
-  });
+    });
+  } catch(err) {
+    console.log(err);
+  }
 
 }
 
 module.exports = {
-  engageAndCatchPokemon
+  engageAndCatchPokemon,
+  evolveOrTransferPokemon
 };

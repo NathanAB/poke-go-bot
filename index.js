@@ -23,7 +23,7 @@ var provider = 'ptc';
 
 // Interval between heartbeats in ms
 var HEARTBEAT_INTERVAL = 2000;
-var VERBOSE = true;
+var VERBOSE = false;
 var timeStart = process.hrtime();
 
 var Pogo = new PokemonGO.Pokeio();
@@ -76,6 +76,9 @@ Pogo.init(username, password, location, provider)
 
     Inventory.manageInventory(Pogo);
 
+    return Inventory.managePokemon(Pogo);
+  })
+  .then(function beginRoute() {
     console.log('Beginning route: ' + config.route);
     setInterval(function () {
       var currentCoords = Movement.move(Pogo);
