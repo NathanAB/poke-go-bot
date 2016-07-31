@@ -11,6 +11,7 @@ function managePokemon(Pogo) {
     // Process pokemon every 1000ms
     setInterval(function processPokemon() {
       if(i >= max) {
+        console.log('Finished Pokemong Management!\n');
         resolve();
         return false;
       }
@@ -23,11 +24,10 @@ function managePokemon(Pogo) {
       var pokemonData = Pogo.pokemonlist[pokedexId - 1];
 
       // We won't touch 1000+ cp pokemon
-      if(cp > 1000) {
-        return;
+      if(cp < 1000) {
+        Catching.evolveOrTransferPokemon(Pogo, pokemonData, pokemonId);
       }
-
-      Catching.evolveOrTransferPokemon(Pogo, pokemonData, pokemonId);
+        
       ++i;
     }, 1000);
   });
