@@ -2,14 +2,19 @@ var PokemonGO = require('pokemon-go-node-api');
 var Promise = require('bluebird');
 
 var config = require('./config.json');
+var routes = require('./routes.json');
 var pokestops = require('./actions/pokestops');
 var catching = require('./actions/catching');
 var movement = require('./actions/movement');
 
 var username = config.user;
 var password = config.pass;
-var location = config.location;
 var gmapsApiKey = config.gmapsApiKey;
+var route = routes[config.route];
+var location = {
+  type: 'coords',
+  coords: route[0]
+};
 var provider = 'ptc';
 
 // Interval between heartbeats in ms
@@ -28,6 +33,10 @@ Pogo.caughtPokemon = [];
 Pogo.xpGained = 0;
 Pogo.pokestopsSpun = 0;
 Pogo.itemsGained = 0;
+Pogo.route = route;
+Pogo.currentDest = 1;
+Pogo.routeWaypointsHit = 0;
+Pogo.verbose = VERBOSE;
 
 console.time('Time Elapsed');
 
@@ -57,23 +66,9 @@ Pogo.init(username, password, location, provider)
       longitude: movement.minLong + 0.01
     };
 
+    console.log('Beginning route ' + config.route);   
     setInterval(function () {
-      var locationCoords = movement.chooseCoordinates(Pogo.GetLocationCoords(), target);
-
-      Pogo.UpdateLocation({ type: 'coords', coords: locationCoords }, function(err, loc){
-        if(err) { throw err; }
-        if(VERBOSE) {
-          console.log('Updating Location [', loc.latitude, ', ', loc.longitude, ']');
-        }
-        moves--;
-      });
-
-      if(moves <= 0){
-
-        target = movement.chooseNewTarget();
-        moves = 20;
-        console.log('New Target Location: [', target.latitude, ',', target.longitude, ']');
-      }
+      var currentCoords = movement.move(Pogo);
 
       Pogo.Heartbeat(function (err, hb) {
         if (err) {
@@ -94,7 +89,7 @@ Pogo.init(username, password, location, provider)
           console.log(nearby);
         }
 
-        pokestops.spinPokestops(Pogo, hb, locationCoords);
+        pokestops.spinPokestops(Pogo, hb, currentCoords);
 
         // Show MapPokemons (catchable) & catch
         for (i = hb.cells.length - 1; i >= 0; i--) {
@@ -113,10 +108,11 @@ Pogo.init(username, password, location, provider)
 function exitHandler(){
   console.log('\n');
   console.timeEnd('Time Elapsed');
-  console.log('Pokemon Caught: ', JSON.stringify(Pogo.caughtPokemon));
-  console.log('Pokestops Spun: ', Pogo.pokestopsSpun);
-  console.log('# Items Gained: ', Pogo.itemsGained);
-  console.log('XP Gained: ~', Pogo.xpGained);
+  console.log('Pokemon Caught:', JSON.stringify(Pogo.caughtPokemon));
+  console.log('Pokestops Spun:', Pogo.pokestopsSpun);
+  console.log('# Items Gained:', Pogo.itemsGained);
+  console.log('XP Gained: ~' + Pogo.xpGained);
+  console.log('Route waypoints hit:' + Pogo.routeWaypointsHit);
   process.exit();
 }
 

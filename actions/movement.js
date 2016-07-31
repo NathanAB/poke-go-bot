@@ -1,37 +1,51 @@
 var _ = require('lodash');
+var utils = require('../utils');
 
-// Movement Boundries
-// 38.9096936, -77.043339 -- Top Left
-// 38.8896936, -77.023339 -- Bottom Right
+var WALK_SPEED = 0.00005;
+var VARIANCE = 0.00001;
 
-var minLat = 38.8896936;
-var minLong = -77.0433390;
+/**
+ * Move our character along a selected route
+ */
+function move(Pogo) {
+  var currentCoords = Pogo.GetLocationCoords();
+  var destCoords = Pogo.route[Pogo.currentDest];
+  var distToDest = utils.getDistance(currentCoords.Latitude, currentCoords.Longitude, destCoords.latitude, destCoords.longitude);
 
-function chooseCoordinates(coords, target){
-  var directionLat = Math.random() < (coords.latitude - target.latitude) / 0.02 ? -1 : 1;
-  var directionLong = Math.random() < (coords.longitude - target.longitude) / 0.02 ? -1 : 1;
+  // If we are at our destination, switch destination to next point in the route
+  if(distToDest < 50) {
+    console.log('--- Arrived at route waypoint ' + Pogo.currentDest + ' ---');
+    Pogo.currentDest = Pogo.currentDest === (Pogo.route.length - 1) ? 0 : Pogo.currentDest + 1;
+    destCoords = Pogo.route[Pogo.currentDest];
+    Pogo.routeWaypointsHit++;
+  }
 
-  var deltaLat = _.random(0, 0.000095, true);
-  var deltaLong = _.random(0, 0.000095, true);
+  // Calculate delta with some randomness
+  var deltaLat = destCoords.latitude - currentCoords.latitude;
+  var deltaLong = destCoords.longitude - currentCoords.longitude;
+  var deltaSum = Math.abs(deltaLat) + Math.abs(deltaLong);
+  var stepLat = deltaLat / deltaSum * WALK_SPEED + _.random(-VARIANCE, VARIANCE, true);
+  var stepLong = deltaLong / deltaSum * WALK_SPEED + _.random(-VARIANCE, VARIANCE, true);
 
-  coords.latitude += deltaLat * directionLat;
-  coords.longitude += deltaLong * directionLong;
-  
-  return coords;
-}
+  // Apply delta
+  currentCoords.latitude += stepLat;
+  currentCoords.longitude += stepLong;
 
-function chooseNewTarget(){
-  var newTarget = {
-    latitude: Math.random() * 0.02 + minLat,
-    longitude: Math.random() * 0.02 + minLong
-  };
+  // Update location
+  Pogo.UpdateLocation({ type: 'coords', coords: currentCoords }, function(err, loc) {
+    if(err) {
+      throw err;
+    }
+  });
 
-  return newTarget;
+  if(Pogo.verbose) {
+    console.log('Location:', currentCoords.latitude, ',', currentCoords.longitude);
+  }
+
+  // Return current location coordinates
+  return currentCoords;
 }
 
 module.exports = {
-  minLat,
-  minLong,
-  chooseCoordinates,
-  chooseNewTarget
+  move
 };
