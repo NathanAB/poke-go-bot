@@ -21,7 +21,7 @@ var location = {
 var provider = 'ptc';
 
 // Interval between heartbeats in ms
-var HEARTBEAT_INTERVAL = 3000;
+var HEARTBEAT_INTERVAL = 2000;
 var VERBOSE = false;
 var timeStart = process.hrtime();
 
@@ -40,6 +40,8 @@ Pogo.itemsGained = 0;
 Pogo.route = route;
 Pogo.currentDest = 1;
 Pogo.routeWaypointsHit = 0;
+Pogo.evolves = 0;
+Pogo.transfers = 0;
 Pogo.verbose = VERBOSE;
 
 Pogo.SetGmapsApiKey(config.gmapsApiKey);
@@ -109,6 +111,8 @@ function exitHandler() {
   console.log(timeElapsed[0] + 's');
   console.log('Pokemon Caught: ', Pogo.caughtPokemon.length);
   utils.printObject(_.countBy(Pogo.caughtPokemon));
+  console.log('Pokemon Evolved: ', Pogo.evolves);
+  console.log('Pokemon Transferred: ', Pogo.transfers);
   console.log('Pokestops Spun: ', Pogo.pokestopsSpun);
   console.log('# Items Gained: ', Pogo.itemsGained);
   console.log('XP Gained: ~', Pogo.xpGained);
