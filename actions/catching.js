@@ -52,7 +52,7 @@ function evolveOrTransferPokemon(Pogo, pokemon, pokemonId) {
         }
 
         Pogo.transfers++;
-        console.log('Smelted ' + pokemon.name + ' down for ' + res.CandyAwarded + ' candy');
+        console.log('Smelted ' + pokemon.name + ' down for candy');
       });
     }
 
