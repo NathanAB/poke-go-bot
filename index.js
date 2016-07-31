@@ -76,7 +76,7 @@ Pogo.init(username, password, location, provider)
     if (VERBOSE) PokemonManagement.printPokemonGrouped(Pogo);
     if (VERBOSE) InventoryManagement.printInventory(Pogo);
 
-    return InventoryManagement.manageInventory(Pogo);    
+    return InventoryManagement.manageInventory(Pogo);
   })
   .then(function runPokemonManagement() {
     console.log('Finished Inventory Management!\n');
@@ -87,30 +87,18 @@ Pogo.init(username, password, location, provider)
     console.log('Beginning route: ' + config.route);
     setInterval(function () {
       var currentCoords = Movement.move(Pogo);
-      try { 
-      Pogo.Heartbeat(function (err, hb) {
-        if (err) console.log(err);
+      try {
+        Pogo.Heartbeat(function (err, hb) {
+          if (err) console.log(err);
 
-        // Print nearby pokemon
-        if (VERBOSE) Utils.printNearby(Pogo, hb);
+          // Print nearby pokemon
+          if (VERBOSE) Utils.printNearby(Pogo, hb);
 
-        Pokestops.spinPokestops(Pogo, hb, currentCoords);
+          Pokestops.spinPokestops(Pogo, hb, currentCoords);
+          Catching.catchNearby(Pogo, hb);
 
-        try {
-          // Show MapPokemons (catchable) & catch
-          for (var i = hb.cells.length - 1; i >= 0; i--) {
-            for (var j = hb.cells[i].MapPokemon.length - 1; j >= 0; j--) {   // use async lib with each or eachSeries should be better :)
-              var currentPokemon = hb.cells[i].MapPokemon[j];
-              Catching.engageAndCatchPokemon(Pogo, currentPokemon);
-            }
-          }
-        } catch (error) {
-          console.log(error);
-          return;
-        }
-
-      });
-      } catch(err) {
+        });
+      } catch (err) {
         consle.log(err);
       }
     }, HEARTBEAT_INTERVAL);
@@ -132,7 +120,7 @@ function exitHandler() {
   console.log('Pokestops Spun: ', Pogo.pokestopsSpun);
   console.log('# Items Gained: ', Pogo.itemsGained);
   console.log('XP Gained: ~', Pogo.xpGained);
-  console.log(_.floor((Pogo.xpGained / timeElapsed[0]), 2) + 'XP/s');
+  console.log(_.floor((Pogo.xpGained / timeElapsed[0]), 2) + ' XP/s');
   console.log('Route waypoints hit:' + Pogo.routeWaypointsHit);
   process.exit();
 }
