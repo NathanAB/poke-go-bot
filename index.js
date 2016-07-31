@@ -73,7 +73,7 @@ Pogo.init(username, password, location, provider)
     console.log('[i] Item Storage: ' + _.sumBy(Pogo.playerInventory, 'inventory_item_data.item.count') + ' / ' + profile.item_storage);
     console.log('[i] Stardust: ' + profile.currency[1].amount + '\n');
 
-    if (VERBOSE) PokemonManagement.printPokemonGrouped(Pogo);
+    /*if (VERBOSE)*/ PokemonManagement.printPokemonGrouped(Pogo);
     if (VERBOSE) InventoryManagement.printInventory(Pogo);
 
     return InventoryManagement.manageInventory(Pogo);
