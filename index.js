@@ -76,12 +76,14 @@ Pogo.init(username, password, location, provider)
     if (VERBOSE) PokemonManagement.printPokemonGrouped(Pogo);
     if (VERBOSE) InventoryManagement.printInventory(Pogo);
 
-
-    InventoryManagement.manageInventory(Pogo);
-
+    return InventoryManagement.manageInventory(Pogo);    
+  })
+  .then(function runPokemonManagement() {
+    console.log('Inventory Management Finished!\n');
     return PokemonManagement.managePokemon(Pogo);
   })
   .then(function beginRoute() {
+    console.log('Pokemon Management Finished!\n');
     console.log('Beginning route: ' + config.route);
     setInterval(function () {
       var currentCoords = Movement.move(Pogo);

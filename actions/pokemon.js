@@ -4,7 +4,7 @@ var Catching = require('./catching');
 
 function managePokemon(Pogo) {
   return new Promise(function (resolve, reject) {
-    console.log('Cleaning up Pokemon inventory...');
+    console.log('Running Pokemon Management...');
     var i = 0;
     var max = Pogo.playerPokemon.length;
 

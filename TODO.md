@@ -29,3 +29,4 @@ Automation:
 
 Luxuries:
 - Pokemon Hunting Mode (For rarity)
+- Need to wait between requests made not between logic (Pokemon Management can take a long time)
