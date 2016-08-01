@@ -23,11 +23,7 @@ function move(Pogo) {
 
     if (Pogo.currentDest % 2 === 0) {
       InventoryManagement.manageInventory(Pogo).then(function () {       
-        if (Pogo.playerLevel <= 20) {
-          PokemonManagement.managePokemon(Pogo);
-        } else {
-          PokemonManagement.trimPokemon(Pogo);
-        }
+        PokemonManagement.managePokemon(Pogo);
       });
     }
 
