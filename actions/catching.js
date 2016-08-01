@@ -20,7 +20,7 @@ function engageAndCatchPokemon(Pogo, pokemon) {
         case 1:
           Pogo.xpGained += 100;
           Pogo.caughtPokemon.push(pokedexInfo.name);
-          if(Pogo.playerLevel <= 20 && pokedexInfo && !pokedexInfo.prev_evolution) {
+          if(Pogo.playerLevel <= 20 && (!pokedexInfo.prev_evolution || (pokedexInfo.prev_evolution && pokedexInfo.next_evolution))) {
             PokemonManagement.evolveOrTransferPokemon(Pogo, pokedexInfo, xdat.CapturedPokemonId);
           }
           break;
