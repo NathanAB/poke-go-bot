@@ -21,12 +21,15 @@ function move(Pogo) {
     destCoords = Pogo.route[Pogo.currentDest];
     Pogo.routeWaypointsHit++;
 
-    InventoryManagement.manageInventory(Pogo).then(function () {
-      PokemonManagement.trimPokemon(Pogo);
-      if(Pogo.playerLevel <= 20) {
-        PokemonManagement.managePokemon(Pogo);
-      }
-    });
+    if (Pogo.currentDest % 2 === 0) {
+      InventoryManagement.manageInventory(Pogo).then(function () {       
+        if (Pogo.playerLevel <= 20) {
+          PokemonManagement.managePokemon(Pogo);
+        } else {
+          PokemonManagement.trimPokemon(Pogo);
+        }
+      });
+    }
 
     // This function should DEFINITELY be util
     // Print level and xp as a status update
