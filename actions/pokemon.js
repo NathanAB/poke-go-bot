@@ -11,7 +11,7 @@ function managePokemon(Pogo) {
 
       // Leave evolving to be done manually for level 21+
       if(Pogo.playerLevel > 20) {
-        resolve();
+        return resolve();
       }
 
       console.log('Evolving or transforming Pokemon...');
