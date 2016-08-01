@@ -56,7 +56,7 @@ function trimPokemon(Pogo) {
     _.forEach(groupedPokemon, function (pokemonGroup, key) {
       var pokedexInfo = Pogo.pokemonlist[key - 1];
 
-      if (_.size(pokemonGroup) > 1 && pokedexInfo && (!pokedexInfo.next_evolution || (pokedexInfo.next_evolution && pokedexInfo.prev_evolution))) {
+      if (_.size(pokemonGroup) > 1 && pokedexInfo/* && (!pokedexInfo.next_evolution || (pokedexInfo.next_evolution && pokedexInfo.prev_evolution))*/) {
 
         // Don't trim >= 1000 CP Pokemon
         _.remove(pokemonGroup, function (n) {
@@ -194,6 +194,7 @@ function printPokemonBigTicket(Pogo) {
 
 module.exports = {
   managePokemon,
+  trimPokemon,
   printPokemon,
   printPokemonGrouped,
   printPokemonBigTicket,
