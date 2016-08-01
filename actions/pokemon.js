@@ -12,6 +12,7 @@ function managePokemon(Pogo) {
       // Leave evolving to be done manually for level 21+
       if(Pogo.playerLevel > 20) {
         resolve();
+        return;
       }
 
       console.log('Evolving or transforming Pokemon...');
@@ -24,7 +25,7 @@ function managePokemon(Pogo) {
 
         // Make sure pokemon exists and we aren't out of sync -- this has crashed before
         // Could be because of server issues? Has happened to multiple bots at once
-        if(!Pogo.playerPokemon[i]) {
+        if(Pogo.playerPokemon[i] && Pogo.playerPokemon[i].inventory_item_data) {
           var pokemon = Pogo.playerPokemon[i].inventory_item_data.pokemon;
           var pokemonId = pokemon.id;
           var pokedexId = pokemon.pokemon_id;
