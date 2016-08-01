@@ -22,11 +22,9 @@ function managePokemon(Pogo) {
       var pokemonCp = pokemon.cp;
       var pokemonData = Pogo.pokemonlist[pokedexId - 1];
 
-      // Conditons for Transfer:
-      // Under 1000 CP
-      // First evolution form
-      if (pokemonCp < 1000 && pokemonData && !pokemonData.prev_evolution) {
-        evolveOrTransferPokemon(Pogo, pokemonData, pokemonId);
+      // We won't touch 1000+ cp pokemon
+      if(cp < Pogo.minCp && pokemonData && !pokemonData.prev_evolution) {
+        Catching.evolveOrTransferPokemon(Pogo, pokemonData, pokemonId);
       }
 
       ++i;

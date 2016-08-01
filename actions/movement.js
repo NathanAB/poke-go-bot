@@ -2,7 +2,7 @@ var _ = require('lodash');
 var utils = require('../utils');
 var InventoryManagement = require('./inventory');
 
-var WALK_SPEED = 0.00005;
+var WALK_SPEED = 0.00006;
 var VARIANCE = 0.00001;
 
 /**
