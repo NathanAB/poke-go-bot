@@ -15,7 +15,8 @@ var username = process.env.PGO_USER || config.user;
 var password = process.env.PGO_PASS || config.pass;
 var location = config.location;
 var gmapsApiKey = config.gmapsApiKey;
-var route = routes[config.route];
+var routeName = process.env.PGO_ROUTE || config.route;
+var route = routes[routeName];
 var location = {
   type: 'coords',
   coords: route[0]
@@ -84,7 +85,7 @@ Pogo.init(username, password, location, provider)
   })
   .then(function beginRoute() {
     console.log('Finished Pokemon Management!\n');
-    console.log('Beginning route: ' + config.route);
+    console.log('Beginning route: ' + routeName);
     setInterval(function () {
       var currentCoords = Movement.move(Pogo);
       try {
