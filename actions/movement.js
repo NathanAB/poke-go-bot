@@ -21,9 +21,8 @@ function move(Pogo) {
     destCoords = Pogo.route[Pogo.currentDest];
     Pogo.routeWaypointsHit++;
 
-    InventoryManagement.manageInventory(Pogo).then(function () {
-      PokemonManagement.managePokemon(Pogo);
-    });
+    InventoryManagement.manageInventory(Pogo);
+    //PokemonManagement.managePokemon(Pogo);
 
     // This function should DEFINITELY be util
     // Print level and xp as a status update
