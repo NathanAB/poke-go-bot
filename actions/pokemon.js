@@ -9,6 +9,11 @@ function managePokemon(Pogo) {
 
     trimPokemon(Pogo).then(function () {
 
+      // Leave evolving to be done manually for level 21+
+      if(Pogo.playerLevel > 20) {
+        return;
+      }
+
       console.log('Evolving or transforming Pokemon...');
       // Process pokemon every 1000ms
       setInterval(function processPokemon() {
