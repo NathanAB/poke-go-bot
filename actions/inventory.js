@@ -29,7 +29,7 @@ function manageInventory(Pogo) {
 }
 
 function manageItem(Pogo, item) {
-  var itemId = item.inventory_item_data.item.item;
+  var itemId = item.inventory_item_data.item.item_id;
   var itemCount = item.inventory_item_data.item.count;
   var itemMax = items[itemId].max;
   var itemDiff = itemCount - itemMax;

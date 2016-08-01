@@ -47,6 +47,9 @@ Pogo.evolves = 0;
 Pogo.transfers = 0;
 Pogo.verbose = VERBOSE;
 
+// Min CP of pokemon to keep
+Pogo.minCp = 600;
+
 Pogo.SetGmapsApiKey(config.gmapsApiKey);
 
 Pogo.init(username, password, location, provider)

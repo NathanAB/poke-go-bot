@@ -17,7 +17,9 @@ function engageAndCatchPokemon(Pogo, pokemon) {
         case 1:
           Pogo.xpGained += 100;
           Pogo.caughtPokemon.push(pokedexInfo.name);
-          evolveOrTransferPokemon(Pogo, pokedexInfo, xdat.CapturedPokemonId);
+          if(pokemon.cp < Pogo.minCp && pokedexInfo && !pokedexInfo.prev_evolution) {
+            evolveOrTransferPokemon(Pogo, pokedexInfo, xdat.CapturedPokemonId);
+          }
           break;
         case 2:
           Pogo.CatchPokemon(pokemon, 1, 1.950, 1, 1, _catchPokemonHandler);
