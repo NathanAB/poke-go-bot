@@ -1,3 +1,5 @@
+var PokemonManagement = require('./pokemon');
+
 var SUCCESS_STATUS = ['ERROR :(', 'SUCCESS!', 'ESCAPED! Trying again...', 'FLED!', 'MISSED!'];
 
 /**
@@ -18,7 +20,7 @@ function engageAndCatchPokemon(Pogo, pokemon) {
           Pogo.xpGained += 100;
           Pogo.caughtPokemon.push(pokedexInfo.name);
           if(pokemon.cp < Pogo.minCp && pokedexInfo && !pokedexInfo.prev_evolution) {
-            evolveOrTransferPokemon(Pogo, pokedexInfo, xdat.CapturedPokemonId);
+            PokemonManagement.evolveOrTransferPokemon(Pogo, pokedexInfo, xdat.CapturedPokemonId);
           }
           break;
         case 2:
@@ -50,37 +52,7 @@ function catchNearby(Pogo, hb) {
   }
 }
 
-function evolveOrTransferPokemon(Pogo, pokemon, pokemonId) {
-
-  // Attempt to evolve all caught pokemon
-  try {
-    Pogo.EvolvePokemon(pokemonId, function evolutionRes(err, res) {
-      if (err) { return console.log('Evolution Error: ' + err); }
-
-      if (res.Result === 1) {
-        console.log('Successfully evolved ' + pokemon.name);
-        Pogo.xpGained += 500;
-        Pogo.evolves++;
-      } else if (res.Result === 3) {
-        // Transfer when evolvable but not enough candy
-        Pogo.TransferPokemon(pokemonId, function (err, res) {
-          if (err) { return console.log('Transfer Error: ' + err); }
-          if (res.Status === 1) {
-            Pogo.transfers++;
-            console.log('Smelted ' + pokemon.name + ' down for candy');
-          }
-        });
-      }
-
-    });
-  } catch (err) {
-    console.log(err);
-  }
-
-}
-
 module.exports = {
   catchNearby,
-  engageAndCatchPokemon,
-  evolveOrTransferPokemon
+  engageAndCatchPokemon
 };

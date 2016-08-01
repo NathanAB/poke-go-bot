@@ -165,8 +165,27 @@ function printPokemonGrouped(Pogo) {
   console.log('');
 }
 
+function printPokemonBigTicket(Pogo) {
+
+  console.log('Big Ticket Pokemon:')
+
+  _.forEach(Pogo.playerPokemon, function (pokemon) {
+    var id = pokemon.inventory_item_data.pokemon.id;
+    var pokemonId = pokemon.inventory_item_data.pokemon.pokemon_id;
+    var pokemonCp = pokemon.inventory_item_data.pokemon.cp;
+    var pokedexInfo = Pogo.pokemonlist[pokemonId - 1];
+
+    if (pokedexInfo && pokedexInfo.name && (pokedexInfo.rarity > 5 || pokemonCp > 1000)) {
+      console.log(pokedexInfo.name + ' CP: ' + pokemonCp);
+    }
+  });
+  console.log('');  
+
+}
+
 module.exports = {
   managePokemon,
   printPokemon,
-  printPokemonGrouped
+  printPokemonGrouped,
+  printPokemonBigTicket
 };
