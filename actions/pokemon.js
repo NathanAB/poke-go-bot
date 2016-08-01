@@ -32,7 +32,7 @@ function managePokemon(Pogo) {
   });
 }
 
-// Remove multiples of final evolution pokemon
+// Remove multiples of middle and final evolution pokemon
 function trimPokemon(Pogo) {
   return new Promise(function (resolve, reject) {
     console.log('Trimming Pokemon...');
@@ -45,7 +45,7 @@ function trimPokemon(Pogo) {
     _.forEach(groupedPokemon, function (pokemonGroup, key) {
       var pokedexInfo = Pogo.pokemonlist[key - 1];
 
-      if (_.size(pokemonGroup) > 1 && pokedexInfo && !pokedexInfo.next_evolution) {
+      if (_.size(pokemonGroup) > 1 && pokedexInfo && (!pokedexInfo.next_evolution || (pokedexInfo.next_evolution && pokedexInfo.prev_evolution))) {
         
         // Don't trim >= 1000 CP Pokemon
         _.remove(pokemonGroup, function (n) {
