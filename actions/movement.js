@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var utils = require('../utils');
+var Utils = require('../utils');
 var InventoryManagement = require('./inventory');
 var PokemonManagement = require('./pokemon');
 
@@ -12,11 +12,11 @@ var VARIANCE = 0.00001;
 function move(Pogo) {
   var currentCoords = Pogo.GetLocationCoords();
   var destCoords = Pogo.route[Pogo.currentDest];
-  var distToDest = utils.getDistance(currentCoords.latitude, currentCoords.longitude, destCoords.latitude, destCoords.longitude);
+  var distToDest = Utils.getDistance(currentCoords.latitude, currentCoords.longitude, destCoords.latitude, destCoords.longitude);
 
   // If we are at/near our destination, switch destination to next point in the route
   if (distToDest < 25) {
-    console.log('--- Arrived at route waypoint ' + Pogo.currentDest + ' ---');
+    console.log('\n[i] Arrived at route waypoint ' + Pogo.currentDest);
     Pogo.currentDest = Pogo.currentDest === (Pogo.route.length - 1) ? 0 : Pogo.currentDest + 1;
     destCoords = Pogo.route[Pogo.currentDest];
     Pogo.routeWaypointsHit++;
@@ -37,14 +37,17 @@ function move(Pogo) {
         var playerPokemon = _.filter(inventory.inventory_delta.inventory_items, 'inventory_item_data.pokemon');
 
         // Update inventory
+        var oldLevel = Pogo.playerStats.level;
+        Pogo.playerStats = playerStats;
         Pogo.playerInventory = playerInventory;
         Pogo.playerPokemon = playerPokemon;
 
         // Report levels up and XP
-        if (Pogo.playerLevel < playerStats.level) {
-          console.log('LEVEL UP!!! Now level', Pogo.playerLevel = playerStats.level);
+        if (Pogo.playerStats.level > oldLevel) {
+          console.log('\nLEVEL UP!!! Now level', Pogo.playerStats.level, '\n');
         }
-        console.log('Total experience gained:', Pogo.xpGained);
+        Utils.printStats(Pogo);
+        console.log('[i] Total XP gained:', Pogo.xpGained, '\n');
       });
   }
 

@@ -3,14 +3,14 @@ var Promise = require('bluebird');
 
 function managePokemon(Pogo) {
   return new Promise(function (resolve, reject) {
-    console.log('Running Pokemon Management...');
+    console.log('[i] Running Pokemon Management...');
     var i = 0;
     var max = Pogo.playerPokemon.length;
 
     trimPokemon(Pogo).then(function () {
 
       // Leave evolving to be done manually for level 21+
-      if(Pogo.playerLevel > 20) {
+      if(Pogo.playerStats.level > 20) {
         resolve();
         return;
       }
