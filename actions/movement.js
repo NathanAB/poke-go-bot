@@ -22,7 +22,10 @@ function move(Pogo) {
     Pogo.routeWaypointsHit++;
 
     InventoryManagement.manageInventory(Pogo).then(function () {
-      PokemonManagement.managePokemon(Pogo);
+      PokemonManagement.trimPokemon(Pogo);
+      if(Pogo.playerLevel <= 20) {
+        PokemonManagement.managePokemon(Pogo);
+      }
     });
 
     // This function should DEFINITELY be util
