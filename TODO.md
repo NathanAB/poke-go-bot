@@ -11,6 +11,7 @@ Pokemon Management:
 - When near capacity, recycle pokemon
 - When recycling, calculate how many should remain for evolution targets
 - Use Lucky Egg prior to evolving pokemon
+- Fix evolution logic (can potentially keep evolving first form pokemon instead of available second form)
 
 Movement:
 - ~~Sweep target areas~~
