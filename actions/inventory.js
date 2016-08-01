@@ -46,7 +46,7 @@ function manageItem(Pogo, item) {
 function printInventory(Pogo) {
 
   _.forEach(Pogo.playerInventory, function (item) {
-    var itemId = item.inventory_item_data.item.item;
+    var itemId = item.inventory_item_data.item.item_id;
     var itemCount = item.inventory_item_data.item.count || 0;
 
     console.log(items[itemId].name + ' x' + itemCount + ' (Max: ' + items[itemId].max + ')');

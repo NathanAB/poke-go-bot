@@ -5,15 +5,15 @@
   },
   "1": {
     "name": "Pokeball",
-    "max": 100
+    "max": 80
   },
   "2": {
     "name": "Greatball",
-    "max": 100
+    "max": 80
   },
   "3": {
     "name": "Ultraball",
-    "max": 999
+    "max": 80
   },
   "4": {
     "name": "Masterball",
