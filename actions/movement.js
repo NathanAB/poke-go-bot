@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var utils = require('../utils');
 var InventoryManagement = require('./inventory');
+var PokemonManagement = require('./pokemon');
 
 var WALK_SPEED = 0.00006;
 var VARIANCE = 0.00001;
@@ -14,27 +15,31 @@ function move(Pogo) {
   var distToDest = utils.getDistance(currentCoords.latitude, currentCoords.longitude, destCoords.latitude, destCoords.longitude);
 
   // If we are at/near our destination, switch destination to next point in the route
-  if(distToDest < 25) {
+  if (distToDest < 25) {
     console.log('--- Arrived at route waypoint ' + Pogo.currentDest + ' ---');
     Pogo.currentDest = Pogo.currentDest === (Pogo.route.length - 1) ? 0 : Pogo.currentDest + 1;
     destCoords = Pogo.route[Pogo.currentDest];
     Pogo.routeWaypointsHit++;
 
-    InventoryManagement.manageInventory(Pogo);
+    InventoryManagement.manageInventory(Pogo).then(function () {
+      PokemonManagement.managePokemon(Pogo);
+    });
 
-    // This funcion should be util
+    // This function should DEFINITELY be util
     // Print level and xp as a status update
     Pogo.GetInventory()
       .then(function logInventory(inventory) {
         var playerStatsKey = _.findKey(inventory.inventory_delta.inventory_items, 'inventory_item_data.player_stats');
         var playerStats = inventory.inventory_delta.inventory_items[playerStatsKey].inventory_item_data.player_stats;
         var playerInventory = _.filter(inventory.inventory_delta.inventory_items, 'inventory_item_data.item');
+        var playerPokemon = _.filter(inventory.inventory_delta.inventory_items, 'inventory_item_data.pokemon');
 
         // Update inventory
         Pogo.playerInventory = playerInventory;
+        Pogo.playerPokemon = playerPokemon;
 
         // Report levels up and XP
-        if(Pogo.playerLevel < playerStats.level) {
+        if (Pogo.playerLevel < playerStats.level) {
           console.log('LEVEL UP!!! Now level', Pogo.playerLevel = playerStats.level);
         }
         console.log('Total experience gained:', Pogo.xpGained);
@@ -53,13 +58,13 @@ function move(Pogo) {
   currentCoords.longitude += stepLong;
 
   // Update location
-  Pogo.UpdateLocation({ type: 'coords', coords: currentCoords }, function(err, loc) {
-    if(err) {
+  Pogo.UpdateLocation({ type: 'coords', coords: currentCoords }, function (err, loc) {
+    if (err) {
       throw err;
     }
   });
 
-  if(Pogo.verbose) {
+  if (Pogo.verbose) {
     console.log('Location:', currentCoords.latitude, ',', currentCoords.longitude);
   }
 

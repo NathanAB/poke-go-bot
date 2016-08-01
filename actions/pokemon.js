@@ -7,28 +7,30 @@ function managePokemon(Pogo) {
     var i = 0;
     var max = Pogo.playerPokemon.length;
 
-    trimPokemon(Pogo);
+    trimPokemon(Pogo).then(function () {
 
-    // Process pokemon every 1000ms
-    setInterval(function processPokemon() {
-      if (i >= max) {
-        resolve();
-        return false;
-      }
+      console.log('Evolving or transforming Pokemon...');
+      // Process pokemon every 1000ms
+      setInterval(function processPokemon() {
+        if (i >= max) {
+          resolve();
+          return false;
+        }
 
-      var pokemon = Pogo.playerPokemon[i].inventory_item_data.pokemon;
-      var pokemonId = pokemon.id;
-      var pokedexId = pokemon.pokemon_id;
-      var pokemonCp = pokemon.cp;
-      var pokemonData = Pogo.pokemonlist[pokedexId - 1];
+        var pokemon = Pogo.playerPokemon[i].inventory_item_data.pokemon;
+        var pokemonId = pokemon.id;
+        var pokedexId = pokemon.pokemon_id;
+        var pokemonCp = pokemon.cp;
+        var pokemonData = Pogo.pokemonlist[pokedexId - 1];
 
-      // We won't touch 1000+ cp pokemon
-      if(pokemonCp < Pogo.minCp && pokemonData && !pokemonData.prev_evolution) {
-        evolveOrTransferPokemon(Pogo, pokemonData, pokemonId);
-      }
+        // We won't touch 1000+ cp pokemon
+        if (pokemonCp < Pogo.minCp && pokemonData && !pokemonData.prev_evolution) {
+          evolveOrTransferPokemon(Pogo, pokemonData, pokemonId);
+        }
 
-      ++i;
-    }, 1000);
+        ++i;
+      }, 1000);
+    });
   });
 }
 
@@ -46,7 +48,7 @@ function trimPokemon(Pogo) {
       var pokedexInfo = Pogo.pokemonlist[key - 1];
 
       if (_.size(pokemonGroup) > 1 && pokedexInfo && (!pokedexInfo.next_evolution || (pokedexInfo.next_evolution && pokedexInfo.prev_evolution))) {
-        
+
         // Don't trim >= 1000 CP Pokemon
         _.remove(pokemonGroup, function (n) {
           return n.inventory_item_data.pokemon.cp >= 1000;
@@ -58,16 +60,16 @@ function trimPokemon(Pogo) {
         // Push all but the strongest to be trimmed
         if (_.size(pokemonGroup) > 1) {
           pokemonGroup = _.tail(pokemonGroup);
-          console.log(pokedexInfo.name + ' x' + _.size(pokemonGroup));
+          if(Pogo.verbose) console.log(pokedexInfo.name + ' x' + _.size(pokemonGroup));
           _.forEach(pokemonGroup, function (value) {
             pokemonToTrim.push(value);
           });
         }
       }
     });
-
-    trimBatch(Pogo, pokemonToTrim);
-    resolve();
+    trimBatch(Pogo, pokemonToTrim).then(function () {
+      resolve();
+    });
   });
 }
 
