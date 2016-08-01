@@ -17,15 +17,19 @@ function managePokemon(Pogo) {
           return false;
         }
 
-        var pokemon = Pogo.playerPokemon[i].inventory_item_data.pokemon;
-        var pokemonId = pokemon.id;
-        var pokedexId = pokemon.pokemon_id;
-        var pokemonCp = pokemon.cp;
-        var pokemonData = Pogo.pokemonlist[pokedexId - 1];
+        // Make sure pokemon exists and we aren't out of sync -- this has crashed before
+        // Could be because of server issues? Has happened to multiple bots at once
+        if(!Pogo.playerPokemon[i]) {
+          var pokemon = Pogo.playerPokemon[i].inventory_item_data.pokemon;
+          var pokemonId = pokemon.id;
+          var pokedexId = pokemon.pokemon_id;
+          var pokemonCp = pokemon.cp;
+          var pokemonData = Pogo.pokemonlist[pokedexId - 1];
 
-        // We won't touch 1000+ cp pokemon
-        if (pokemonCp < Pogo.minCp && pokemonData && !pokemonData.prev_evolution) {
-          evolveOrTransferPokemon(Pogo, pokemonData, pokemonId);
+          // We won't touch 1000+ cp pokemon
+          if (pokemonCp < Pogo.minCp && pokemonData && !pokemonData.prev_evolution) {
+            evolveOrTransferPokemon(Pogo, pokemonData, pokemonId);
+          }
         }
 
         ++i;
