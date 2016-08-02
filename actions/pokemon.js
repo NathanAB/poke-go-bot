@@ -311,7 +311,7 @@ function printPokemonBigTicket(Pogo) {
     var pokemonCp = pokemon.inventory_item_data.pokemon.cp;
     var pokedexInfo = Pogo.pokemonlist[pokemonId - 1];
 
-    if (pokedexInfo && pokedexInfo.name && (pokedexInfo.rarity >= 5 || pokemonCp > 1000)) {
+    if (pokedexInfo && pokedexInfo.name && (pokedexInfo.rarity >= 5 || pokemonCp > 1500)) {
       console.log(pokedexInfo.name + ' CP: ' + pokemonCp);
     }
   });

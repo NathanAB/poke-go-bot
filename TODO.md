@@ -20,8 +20,9 @@ Pokemon Management:
 - When recycling, calculate how many should remain for evolution targets
 - Use Lucky Egg prior to evolving pokemon
 - Fix evolution logic (can potentially keep evolving first form pokemon instead of available second form)
-- Trim high CP low rarity pokemon (Pinsirs)
+- Trim high CP low rarity pokemon (Pinsirs) (Need to reference Pokedex rarity)
 - Implement Pokemon Management strategies
+- At high level (25?) evolve for missing evolutions
 
 Movement:
 - ~~Sweep target areas~~
