@@ -68,7 +68,7 @@ function trimPokemon(Pogo) {
 
         // Don't trim >= 1000 CP Pokemon and not Pinsirs
         _.remove(pokemonGroup, function (n) {
-          return (n.inventory_item_data.pokemon.cp >= 1000 && pokedexInfo.id != 127);
+          return (n.inventory_item_data.pokemon.cp >= Pogo.minCp && pokedexInfo.id != 127);
         });
 
         // Sort greatest to least
@@ -311,7 +311,7 @@ function printPokemonBigTicket(Pogo) {
     var pokemonCp = pokemon.inventory_item_data.pokemon.cp;
     var pokedexInfo = Pogo.pokemonlist[pokemonId - 1];
 
-    if (pokedexInfo && pokedexInfo.name && (pokedexInfo.rarity >= 5 || pokemonCp > 1500)) {
+    if (pokedexInfo && pokedexInfo.name && (pokedexInfo.rarity >= 5 || pokemonCp >= Pogo.minCp)) {
       console.log(pokedexInfo.name + ' CP: ' + pokemonCp);
     }
   });
