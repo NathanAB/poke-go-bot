@@ -22,7 +22,7 @@ function move(Pogo) {
     Pogo.routeWaypointsHit++;
 
     if (Pogo.currentDest % 2 === 0) {
-      InventoryManagement.manageInventory(Pogo).then(function () {       
+      InventoryManagement.manageInventory(Pogo).then(function () {
         PokemonManagement.managePokemon(Pogo);
       });
     }
@@ -46,8 +46,11 @@ function move(Pogo) {
         if (Pogo.playerStats.level > oldLevel) {
           console.log('\nLEVEL UP!!! Now level', Pogo.playerStats.level, '\n');
         }
-        Utils.printStats(Pogo);
-        console.log('[i] Total XP gained:', Pogo.xpGained, '\n');
+
+        if (Pogo.currentDest % 2 === 1) {
+          Utils.printStats(Pogo);
+          console.log('[i] Total XP gained:', Pogo.xpGained, '\n');
+        }
       });
   }
 
