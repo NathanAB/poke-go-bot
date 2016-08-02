@@ -92,7 +92,12 @@ Pogo.init(username, password, location, provider)
       var currentCoords = Movement.move(Pogo);
       try {
         Pogo.Heartbeat(function (err, hb) {
-          if (err) console.log(err);
+          if (err) {
+            return console.log(err);
+          }
+          if (!hb) {
+            return console.log('Heartbeat failed.');
+          }
 
           // Print nearby pokemon
           if (VERBOSE) Utils.printNearby(Pogo, hb);
