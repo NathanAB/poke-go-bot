@@ -39,8 +39,8 @@ function managePokemon(Pogo) {
             var pokemonCp = pokemon.cp;
             var pokemonData = Pogo.pokemonlist[pokedexId - 1];
 
-            // We won't touch 1000+ cp pokemon
-            if (pokemonCp < Pogo.minCp && pokemonData && !pokemonData.prev_evolution) {
+            // We won't touch 600 cp pokemon first evolution pokemon
+            if (pokemonCp < 600 && pokemonData && !pokemonData.prev_evolution) {
               evolveOrTransferPokemon(Pogo, pokemonData, pokemonId);
             }
           }
