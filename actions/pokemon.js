@@ -7,42 +7,47 @@ function managePokemon(Pogo) {
     var i = 0;
     var max = Pogo.playerPokemon.length;
 
-    trimPokemon(Pogo).then(function () {
+    evolveTrash(Pogo)
+      .then(function () {
+        return trimPokemon(Pogo);
+      })
+      .then(function () {
 
-      // Leave evolving to be done manually for level 21+
-      if (Pogo.playerStats.level > 20) {
-        manageUpgrades(Pogo).then(function () {
+        // Leave evolving to be done manually for level 21+
+        if (Pogo.playerStats.level > 20) {
+          /*manageUpgrades(Pogo).then(function () {
+            resolve();
+          });*/
           resolve();
-        });
-        return;
-      }
-
-      console.log('[i] Evolving or transforming Pokemon...');
-      // Process pokemon every 1000ms
-      setInterval(function processPokemon() {
-        if (i >= max) {
-          resolve();
-          return false;
+          return;
         }
 
-        // Make sure pokemon exists and we aren't out of sync -- this has crashed before
-        // Could be because of server issues? Has happened to multiple bots at once
-        if (Pogo.playerPokemon[i] && Pogo.playerPokemon[i].inventory_item_data) {
-          var pokemon = Pogo.playerPokemon[i].inventory_item_data.pokemon;
-          var pokemonId = pokemon.id;
-          var pokedexId = pokemon.pokemon_id;
-          var pokemonCp = pokemon.cp;
-          var pokemonData = Pogo.pokemonlist[pokedexId - 1];
-
-          // We won't touch 1000+ cp pokemon
-          if (pokemonCp < Pogo.minCp && pokemonData && !pokemonData.prev_evolution) {
-            evolveOrTransferPokemon(Pogo, pokemonData, pokemonId);
+        console.log('[i] Evolving or transforming Pokemon...');
+        // Process pokemon every 1000ms
+        setInterval(function processPokemon() {
+          if (i >= max) {
+            resolve();
+            return false;
           }
-        }
 
-        ++i;
-      }, 1000);
-    });
+          // Make sure pokemon exists and we aren't out of sync -- this has crashed before
+          // Could be because of server issues? Has happened to multiple bots at once
+          if (Pogo.playerPokemon[i] && Pogo.playerPokemon[i].inventory_item_data) {
+            var pokemon = Pogo.playerPokemon[i].inventory_item_data.pokemon;
+            var pokemonId = pokemon.id;
+            var pokedexId = pokemon.pokemon_id;
+            var pokemonCp = pokemon.cp;
+            var pokemonData = Pogo.pokemonlist[pokedexId - 1];
+
+            // We won't touch 1000+ cp pokemon
+            if (pokemonCp < Pogo.minCp && pokemonData && !pokemonData.prev_evolution) {
+              evolveOrTransferPokemon(Pogo, pokemonData, pokemonId);
+            }
+          }
+
+          ++i;
+        }, 1000);
+      });
   });
 }
 
@@ -61,9 +66,9 @@ function trimPokemon(Pogo) {
 
       if (_.size(pokemonGroup) > 1 && pokedexInfo/* && (!pokedexInfo.next_evolution || (pokedexInfo.next_evolution && pokedexInfo.prev_evolution))*/) {
 
-        // Don't trim >= 1000 CP Pokemon
+        // Don't trim >= 1000 CP Pokemon and not Pinsirs
         _.remove(pokemonGroup, function (n) {
-          return n.inventory_item_data.pokemon.cp >= 1000;
+          return (n.inventory_item_data.pokemon.cp >= 1000 && pokedexInfo.id != 127);
         });
 
         // Sort greatest to least
@@ -145,6 +150,57 @@ function evolveOrTransferPokemon(Pogo, pokemon, pokemonId) {
   } catch (err) {
     console.log('Catch or Transfer Error: ' + err);
   }
+}
+
+function evolveTrash(Pogo) {
+  return new Promise(function (resolve, reject) {
+    console.log('[i] Evolving Trash Pokemon');
+
+    var groupedPokemon = _.groupBy(Pogo.playerPokemon, 'inventory_item_data.pokemon.pokemon_id');
+    var pokemonToEvolve = [];
+
+    _.forEach(groupedPokemon, function (pokemonGroup, key) {
+      var pokedexInfo = Pogo.pokemonlist[key - 1];
+
+      if (pokedexInfo && pokedexInfo.rarity === 0) {
+        _.forEach(pokemonGroup, function (value) {
+          pokemonToEvolve.push(value);
+        });
+      }
+    });
+    evolveBatch(Pogo, pokemonToEvolve).then(function () {
+      resolve();
+    });
+  });
+}
+
+function evolveBatch(Pogo, batch) {
+  return new Promise(function (resolve, reject) {
+    var i = 0;
+    var max = _.size(batch);
+
+    setInterval(function processPokemon() {
+      if (i >= max) {
+        resolve();
+        return false;
+      }
+
+      var pokemon = batch[i].inventory_item_data.pokemon;
+      var pokemonId = pokemon.id;
+      var pokedexInfo = Pogo.pokemonlist[pokemon.pokemon_id - 1];
+
+      Pogo.EvolvePokemon(pokemonId, function (err, res) {
+        if (err) { return console.log('Trash Evolve Error: ' + err); }
+        if (res.Result === 1) {
+          Pogo.xpGained += 500;
+          Pogo.evolves++;
+          console.log('Trash Evolved: ' + pokedexInfo.name);
+        }
+      });
+
+      ++i;
+    }, 1000);
+  });
 }
 
 function manageUpgrades(Pogo) {

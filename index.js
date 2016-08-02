@@ -11,8 +11,8 @@ var InventoryManagement = require('./actions/inventory');
 var PokemonManagement = require('./actions/pokemon');
 var Utils = require('./utils');
 
-var username = process.env.PGO_USER || config.user;
-var password = process.env.PGO_PASS || config.pass;
+var username = process.argv[2] || process.env.PGO_USER || config.user;
+var password = process.argv[3] ||process.env.PGO_PASS || config.pass;
 var location = config.location;
 var gmapsApiKey = config.gmapsApiKey;
 var routeName = process.env.PGO_ROUTE || config.route;
@@ -135,4 +135,5 @@ function exitHandler() {
 }
 
 process.on('SIGINT', exitHandler);
+process.on('exit', exitHandler);
 // process.on('uncaughtException', exitHandler);
