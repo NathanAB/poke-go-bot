@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 /**
  * Gets a distance (in meters) of two coordinates
  * @returns {float} distance
@@ -39,8 +41,15 @@ function printObject(obj) {
   }
 }
 
+function printStats(Pogo) {
+  console.log('[i] Level: ' + Pogo.playerStats.level);
+  console.log('[i] Poke Storage: ' + _.size(Pogo.playerPokemon) + ' / ' + Pogo.profile.poke_storage);
+  console.log('[i] Item Storage: ' + _.sumBy(Pogo.playerInventory, 'inventory_item_data.item.count') + ' / ' + Pogo.profile.item_storage);
+}
+
 module.exports = {
   getDistance,
   printNearby,
-  printObject
+  printObject,
+  printStats
 };

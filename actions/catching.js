@@ -11,7 +11,7 @@ var SUCCESS_STATUS = ['ERROR :(', 'SUCCESS!', 'ESCAPED! Trying again...', 'FLED!
 function engageAndCatchPokemon(Pogo, pokemon) {
 
   var pokedexInfo = Pogo.pokemonlist[parseInt(pokemon.PokedexTypeId) - 1];
-  var pokeball = Pogo.playerLevel <= 20 ? 1 : 2;
+  var pokeball = Pogo.playerStats.level <= 20 ? 1 : 2;
 
   function _catchPokemonHandler(xsuc, xdat) {
     if (xdat && xdat.Status) {
@@ -20,7 +20,7 @@ function engageAndCatchPokemon(Pogo, pokemon) {
         case 1:
           Pogo.xpGained += 100;
           Pogo.caughtPokemon.push(pokedexInfo.name);
-          if(Pogo.playerLevel <= 20 && (!pokedexInfo.prev_evolution || (pokedexInfo.prev_evolution && pokedexInfo.next_evolution))) {
+          if(Pogo.playerStats.level <= 20 && (!pokedexInfo.prev_evolution || (pokedexInfo.prev_evolution && pokedexInfo.next_evolution))) {
             PokemonManagement.evolveOrTransferPokemon(Pogo, pokedexInfo, xdat.CapturedPokemonId);
           }
           break;

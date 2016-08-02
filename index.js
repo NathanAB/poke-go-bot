@@ -64,17 +64,16 @@ Pogo.init(username, password, location, provider)
     var playerPokemon = _.filter(inventory.inventory_delta.inventory_items, 'inventory_item_data.pokemon');
     var playerInventory = _.filter(inventory.inventory_delta.inventory_items, 'inventory_item_data.item');
 
-    Pogo.playerLevel = playerStats.level;
+    Pogo.playerStats = playerStats;
     Pogo.playerPokemon = playerPokemon;
     Pogo.playerInventory = playerInventory;
 
     return Pogo.GetProfile();
   })
   .then(function logProfileAndBegin(profile) {
+    Pogo.profile = profile;
     console.log('[i] Username: ' + profile.username);
-    console.log('[i] Level: ' + Pogo.playerLevel);
-    console.log('[i] Poke Storage: ' + _.size(Pogo.playerPokemon) + ' / ' + profile.poke_storage);
-    console.log('[i] Item Storage: ' + _.sumBy(Pogo.playerInventory, 'inventory_item_data.item.count') + ' / ' + profile.item_storage);
+    Utils.printStats(Pogo);
     console.log('[i] Stardust: ' + profile.currency[1].amount + '\n');
 
     /*if (VERBOSE)*/ PokemonManagement.printPokemonBigTicket(Pogo);
@@ -122,7 +121,7 @@ function exitHandler() {
   console.log('Pokemon Evolved: ', Pogo.evolves);
   console.log('Pokemon Transferred: ', Pogo.transfers);
   console.log('Pokestops Spun: ', Pogo.pokestopsSpun);
-  console.log('# Items Gained: ', Pogo.itemsGained);
+  //console.log('# Items Gained: ', Pogo.itemsGained);
   console.log('XP Gained: ~', Pogo.xpGained);
   console.log(_.floor((Pogo.xpGained / timeElapsed[0]), 2) + ' XP/s');
   console.log('Route waypoints hit:' + Pogo.routeWaypointsHit);

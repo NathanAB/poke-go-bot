@@ -11,7 +11,7 @@ var items = require('../items.json');
 
 function manageInventory(Pogo) {
   return new Promise(function (resolve, reject) {
-    console.log('Running Inventory Management...');
+    console.log('[1] Running Inventory Management...');
     var i = 0;
     var max = Pogo.playerInventory.length;
 
