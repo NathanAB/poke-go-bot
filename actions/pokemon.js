@@ -11,9 +11,10 @@ function managePokemon(Pogo) {
 
       // Leave evolving to be done manually for level 21+
       if (Pogo.playerStats.level > 20) {
-        manageUpgrades(Pogo).then(function () {
+        /*manageUpgrades(Pogo).then(function () {
           resolve();
-        });
+        });*/
+        resolve();
         return;
       }
 
