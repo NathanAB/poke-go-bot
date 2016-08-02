@@ -46,6 +46,7 @@ Pogo.routeWaypointsHit = 0;
 Pogo.evolves = 0;
 Pogo.transfers = 0;
 Pogo.verbose = VERBOSE;
+Pogo.timeStart = timeStart;
 
 // Min CP of pokemon to keep
 Pogo.minCp = 600;

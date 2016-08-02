@@ -42,11 +42,11 @@ function printObject(obj) {
 }
 
 function printStats(Pogo) {
-  var timeElapsed = process.hrtime(timeStart);
+  var timeElapsed = process.hrtime(Pogo.timeStart);
   console.log('[i] Level: ' + Pogo.playerStats.level);
   console.log('[i] Poke Storage: ' + _.size(Pogo.playerPokemon) + ' / ' + Pogo.profile.poke_storage);
   console.log('[i] Item Storage: ' + _.sumBy(Pogo.playerInventory, 'inventory_item_data.item.count') + ' / ' + Pogo.profile.item_storage);
-  console.log(_.floor((Pogo.xpGained / timeElapsed[0]), 2) + ' XP/s');
+  console.log('[i] XP Rate: ' + _.floor((Pogo.xpGained / timeElapsed[0]), 2) + ' XP/s');
 }
 
 module.exports = {

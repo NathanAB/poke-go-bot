@@ -15,6 +15,8 @@ Egg Management:
 - Incubate eggs based on longest distance
 
 Pokemon Management:
+- Batch evolves at waypoints only when an evolvable threshold is met, AND use lucky eggs right before batch evolves to maximize. For this strategy only evolve 1st tier pokemon. Also trigger evolves when pokemon limit is close to being reached (i.e. 220).
+- Destroy pincers, fuck
 - When recycling, calculate how many should remain for evolution targets
 - Use Lucky Egg prior to evolving pokemon
 - Fix evolution logic (can potentially keep evolving first form pokemon instead of available second form)
@@ -36,6 +38,7 @@ Automation:
   - XP Gained
   - Pokemon Caught
 - Take 5 minute breaks after 1 hr
+- Configure multi-account setup
 
 Luxuries:
 - Pokemon Hunting Mode (For rarity)
