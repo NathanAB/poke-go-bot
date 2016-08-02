@@ -134,4 +134,5 @@ function exitHandler() {
 }
 
 process.on('SIGINT', exitHandler);
+process.on('exit', exitHandler);
 // process.on('uncaughtException', exitHandler);

@@ -21,6 +21,10 @@ function move(Pogo) {
     destCoords = Pogo.route[Pogo.currentDest];
     Pogo.routeWaypointsHit++;
 
+    if(Pogo.routeWaypointsHit > 11){
+      process.exit();
+    }
+
     if (Pogo.currentDest % 2 === 0) {
       InventoryManagement.manageInventory(Pogo).then(function () {
         PokemonManagement.managePokemon(Pogo);
