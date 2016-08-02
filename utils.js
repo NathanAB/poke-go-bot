@@ -43,10 +43,20 @@ function printObject(obj) {
 
 function printStats(Pogo) {
   var timeElapsed = process.hrtime(Pogo.timeStart);
+  var currXp = Pogo.playerStats.experience;
+  var reqXp = Pogo.playerStats.next_level_xp;
+  var xpLeft = reqXp - currXp;
+  var xps = _.floor((Pogo.xpGained / timeElapsed[0]), 2);
+  var minsRemaining = _.floor((xpLeft / xps) / 60);
+
+  // TODO - write levels.json and store level requirements so we can calc level%
+  // var xpPercent = (currXp / reqXp * 100).toFixed(0);
+
   console.log('[i] Level: ' + Pogo.playerStats.level);
   console.log('[i] Poke Storage: ' + _.size(Pogo.playerPokemon) + ' / ' + Pogo.profile.poke_storage);
   console.log('[i] Item Storage: ' + _.sumBy(Pogo.playerInventory, 'inventory_item_data.item.count') + ' / ' + Pogo.profile.item_storage);
-  console.log('[i] XP Rate: ' + _.floor((Pogo.xpGained / timeElapsed[0]), 2) + ' XP/s');
+  console.log('[i] XP Rate: ' + xps + ' XP/s');
+  console.log('[i] XP Remaining to Level '  + (Pogo.playerStats.level + 1) + ': ' + (xpLeft / 1000).toFixed(1) + 'k (~' + minsRemaining + ' mins rem)');
 }
 
 module.exports = {
