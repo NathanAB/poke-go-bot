@@ -49,7 +49,7 @@ Pogo.verbose = VERBOSE;
 Pogo.timeStart = timeStart;
 
 // Min CP of pokemon to keep
-Pogo.minCp = 600;
+Pogo.minCp = 1500;
 
 Pogo.SetGmapsApiKey(config.gmapsApiKey);
 
