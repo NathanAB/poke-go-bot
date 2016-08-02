@@ -12,10 +12,10 @@ var PokemonManagement = require('./actions/pokemon');
 var Utils = require('./utils');
 
 var username = process.argv[2] || process.env.PGO_USER || config.user;
-var password = process.argv[3] ||process.env.PGO_PASS || config.pass;
+var password = process.argv[3] || process.env.PGO_PASS || config.pass;
 var location = config.location;
 var gmapsApiKey = config.gmapsApiKey;
-var routeName = process.env.PGO_ROUTE || config.route;
+var routeName = process.argv[4] || process.env.PGO_ROUTE || config.route;
 var route = routes[routeName];
 var location = {
   type: 'coords',
