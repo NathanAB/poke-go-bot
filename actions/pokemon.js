@@ -13,8 +13,8 @@ function managePokemon(Pogo) {
       if (Pogo.playerStats.level > 20) {
         manageUpgrades(Pogo).then(function () {
           resolve();
-          return;
         });
+        return;
       }
 
       console.log('[i] Evolving or transforming Pokemon...');
