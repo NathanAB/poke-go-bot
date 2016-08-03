@@ -265,12 +265,6 @@ function upgradeBatch(Pogo, batch) {
   });
 }
 
-function manageEggs(Pogo) {
-
-
-
-}
-
 function printPokemon(Pogo) {
 
   console.log('Total Pokemon: ' + _.size(Pogo.playerPokemon) + '\n');

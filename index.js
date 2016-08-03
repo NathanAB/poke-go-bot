@@ -9,10 +9,11 @@ var Catching = require('./actions/catching');
 var Movement = require('./actions/movement');
 var InventoryManagement = require('./actions/inventory');
 var PokemonManagement = require('./actions/pokemon');
+var EggManagement = require('./actions/eggs');
 var Utils = require('./utils');
 
 var username = process.argv[2] || process.env.PGO_USER || config.user;
-var password = process.argv[3] ||process.env.PGO_PASS || config.pass;
+var password = process.argv[3] || process.env.PGO_PASS || config.pass;
 var location = config.location;
 var gmapsApiKey = config.gmapsApiKey;
 var routeName = process.env.PGO_ROUTE || config.route;
@@ -64,11 +65,18 @@ Pogo.init(username, password, location, provider)
     var playerStats = inventory.inventory_delta.inventory_items[playerStatsKey].inventory_item_data.player_stats;
     var playerPokemon = _.filter(inventory.inventory_delta.inventory_items, 'inventory_item_data.pokemon');
     var playerInventory = _.filter(inventory.inventory_delta.inventory_items, 'inventory_item_data.item');
+    var playerEggs = _.remove(playerPokemon, 'inventory_item_data.pokemon.is_egg');
+    var playerIncubators = _.find(inventory.inventory_delta.inventory_items, 'inventory_item_data.egg_incubators');
 
     Pogo.playerStats = playerStats;
     Pogo.playerPokemon = playerPokemon;
     Pogo.playerInventory = playerInventory;
+    Pogo.playerEggs = playerEggs.sort(compareEgg);
+    Pogo.playerIncubators = playerIncubators.inventory_item_data.egg_incubators.egg_incubator;
 
+    return EggManagement.manageEggs(Pogo);
+  })
+  .then(function () {
     return Pogo.GetProfile();
   })
   .then(function logProfileAndBegin(profile) {
@@ -134,6 +142,15 @@ function exitHandler() {
   process.exit();
 }
 
-process.on('SIGINT', exitHandler);
-process.on('exit', exitHandler);
+function compareEgg(a, b) {
+  if (a.inventory_item_data.pokemon.egg_km_walked_target < b.inventory_item_data.pokemon.egg_km_walked_target) {
+    return 1;
+  } else if (a.inventory_item_data.pokemon.egg_km_walked_target > b.inventory_item_data.pokemon.egg_km_walked_target) {
+    return -1;
+  } else
+    return 0;
+}
+
+// process.on('SIGINT', exitHandler);
+// process.on('exit', exitHandler);
 // process.on('uncaughtException', exitHandler);
