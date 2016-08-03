@@ -25,7 +25,7 @@ function spinPokestops(Pogo, hb, coords) {
 
           // Don't care about failed Pokestop spins -- Maybe in Verbose mode
           // Reference node_modules/pokemon-go-node-api/pokemon.proto#1013
-          if (res.result === 1) {
+          if (res.result === 1 && Pogo.verbose) {
             console.log('Spun pokestop! Acquired:');
             Pogo.xpGained += 50;
             Pogo.pokestopsSpun++;

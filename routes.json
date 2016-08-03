@@ -17,26 +17,26 @@
       "longitude": -77.031840
     }
   ],
-  "theMet": [
+  "waterfront": [
     {
-      "latitude": 40.776951,
-      "longitude": -73.963727
+      "latitude": 38.901801,
+      "longitude": -77.061425
     },
     {
-      "latitude": 40.777812,
-      "longitude": -73.963491
+      "latitude": 38.903412,
+      "longitude": -77.067587
     },
     {
-      "latitude": 40.780330,
-      "longitude": -73.961592
+      "latitude": 38.903749,
+      "longitude": -77.067668
     },
     {
-      "latitude": 40.780891,
-      "longitude": -73.963137
+      "latitude": 38.902427,
+      "longitude": -77.062760
     },
     {
-      "latitude": 40.778535,
-      "longitude": -73.964854
+      "latitude": 38.902369,
+      "longitude": -77.061208
     }
   ]
 }
