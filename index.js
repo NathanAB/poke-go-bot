@@ -73,10 +73,7 @@ Pogo.init(username, password, location, provider)
     Pogo.playerInventory = playerInventory;
     Pogo.playerEggs = playerEggs.sort(compareEgg);
     Pogo.playerIncubators = playerIncubators.inventory_item_data.egg_incubators.egg_incubator;
-
-    return EggManagement.manageEggs(Pogo);
-  })
-  .then(function () {
+    
     return Pogo.GetProfile();
   })
   .then(function logProfileAndBegin(profile) {
@@ -94,8 +91,12 @@ Pogo.init(username, password, location, provider)
     console.log('Finished Inventory Management!\n');
     return PokemonManagement.managePokemon(Pogo);
   })
-  .then(function beginRoute() {
+  .then(function runEggManagement(){
     console.log('Finished Pokemon Management!\n');
+    return EggManagement.manageEggs(Pogo);
+  })
+  .then(function beginRoute() {
+    console.log('Finished Egg Management!\n');
     console.log('Beginning route: ' + routeName);
     setInterval(function () {
       var currentCoords = Movement.move(Pogo);

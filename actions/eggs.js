@@ -2,11 +2,9 @@ var _ = require('lodash');
 var Promise = require('bluebird');
 
 function manageEggs(Pogo) {
-
   console.log('[i] Running Egg Management');
   return getHatchedEggs(Pogo)
     .then(incubateEggs);
-
 }
 
 function getHatchedEggs(Pogo) {
@@ -17,7 +15,6 @@ function getHatchedEggs(Pogo) {
         return resolve();
       }
 
-      console.log(res);
       if (res.success) {
         _.forEach(res.pokemon_id, function (pokemon) {
           console.log('Hatched Pokemon: ');
@@ -29,8 +26,6 @@ function getHatchedEggs(Pogo) {
 }
 
 function incubateEggs(Pogo) {
-  console.log('Incubating...');
-
   Promise.each(Pogo.playerIncubators, function (incubator) {
     useIncubator(Pogo, incubator.item_id);
   });
@@ -38,7 +33,6 @@ function incubateEggs(Pogo) {
 
 function useIncubator(Pogo, incubator) {
   return new Promise(function (resolve, reject) {
-    console.log('Using Incubator: ' + incubator);
     var i = 0;
     var max = _.size(Pogo.playerEggs);
 
@@ -53,10 +47,12 @@ function useIncubator(Pogo, incubator) {
       var eggKm = egg.egg_km_walked_target;
 
       Pogo.UseItemEggIncubator(incubator, eggId, function (err, res) {
-        if (err) { console.log('Incubate Error: ' + err); reject(err); return; }
+        if (err) { resolve(); return false; }
 
         if (res.Status === 1) {
           console.log('Successfully incubated ' + eggKm + 'KM egg');
+          resolve(); 
+          return false;
         } else if (res.Status === 5) {
           resolve();
           return false;
