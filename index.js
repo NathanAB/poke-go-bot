@@ -76,7 +76,7 @@ Pogo.init(username, password, location, provider)
     
     return Pogo.GetProfile();
   })
-  .then(function logProfileAndBegin(profile) {
+  .then(function logProfile(profile) {
     Pogo.profile = profile;
     console.log('[i] Username: ' + profile.username);
     Utils.printStats(Pogo);
@@ -85,6 +85,13 @@ Pogo.init(username, password, location, provider)
     /*if (VERBOSE)*/ PokemonManagement.printPokemonBigTicket(Pogo);
     if (VERBOSE) InventoryManagement.printInventory(Pogo);
 
+    return Pogo.LevelUpRewards(Pogo.playerStats.level, function(err, res){
+      if(err) { return; }
+      if(res.Status === 1){ console.log('Got Level Up Rewards!'); }
+      return;
+    });
+  })
+  .then(function getLevelUpRewards() {
     return InventoryManagement.manageInventory(Pogo);
   })
   .then(function runPokemonManagement() {
