@@ -3,25 +3,8 @@ var Promise = require('bluebird');
 
 function manageEggs(Pogo) {
   console.log('[i] Running Egg Management');
-  return getHatchedEggs(Pogo)
-    .then(incubateEggs);
-}
-
-function getHatchedEggs(Pogo) {
-  return new Promise(function (resolve, reject) {
-    Pogo.GetHatchedEggs(function (err, res) {
-      if (err) {
-        console.log('Get Hatched Eggs Error: ' + err);
-        return resolve();
-      }
-
-      if (res.success) {
-        _.forEach(res.pokemon_id, function (pokemon) {
-          console.log('Hatched Pokemon: ');
-        });
-      }
-      return resolve(Pogo);
-    });
+  return new Promise(function (resolve){
+    resolve(incubateEggs(Pogo)); 
   });
 }
 

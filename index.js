@@ -25,7 +25,7 @@ var location = {
 var provider = 'ptc';
 
 // Interval between heartbeats in ms
-var HEARTBEAT_INTERVAL = 2000;
+var HEARTBEAT_INTERVAL = 4000;
 var VERBOSE = false;
 var timeStart = process.hrtime();
 

@@ -20,7 +20,7 @@ function spinPokestops(Pogo, hb, coords) {
       if (dist < 50) {
         Pogo.GetFort(fort.FortId, fort.Latitude, fort.Longitude, function getFort(err, res) {
           if (err) {
-            return /*console.log('Error spinning pokestop: ' + err)*/;
+            return console.log('Error spinning pokestop: ' + err);
           }
 
           // Don't care about failed Pokestop spins -- Maybe in Verbose mode
