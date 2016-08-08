@@ -4,8 +4,8 @@ var InventoryManagement = require('./inventory');
 var PokemonManagement = require('./pokemon');
 var EggManagement = require('./eggs');
 
-var WALK_SPEED = 0.00006;
-var VARIANCE = 0.00001;
+var WALK_SPEED = 0.00008;
+var VARIANCE = 0.00002;
 
 /**
  * Move our character along a selected route
@@ -22,7 +22,7 @@ function move(Pogo) {
     destCoords = Pogo.route[Pogo.currentDest];
     Pogo.routeWaypointsHit++;
 
-    if(Pogo.routeWaypointsHit > 11){
+    if(Pogo.routeWaypointsHit > 5){
       process.exit();
     }
 
@@ -41,6 +41,7 @@ function move(Pogo) {
         var playerInventory = _.filter(inventory.inventory_delta.inventory_items, 'inventory_item_data.item');
         var playerPokemon = _.filter(inventory.inventory_delta.inventory_items, 'inventory_item_data.pokemon');
         var playerEggs = _.remove(playerPokemon, 'inventory_item_data.pokemon.is_egg');
+        var playerIncubators = _.find(inventory.inventory_delta.inventory_items, 'inventory_item_data.egg_incubators');
 
         // Update inventory
         var oldLevel = Pogo.playerStats.level;
@@ -48,6 +49,7 @@ function move(Pogo) {
         Pogo.playerInventory = playerInventory;
         Pogo.playerPokemon = playerPokemon;
         Pogo.playerEggs = playerEggs;
+        Pogo.playerIncubators = playerIncubators.inventory_item_data.egg_incubators.egg_incubator;
 
         // Report levels up and XP
         if (Pogo.playerStats.level > oldLevel) {
@@ -58,7 +60,7 @@ function move(Pogo) {
           Utils.printStats(Pogo);
           console.log('[i] Total XP gained:', Pogo.xpGained, '\n');
 
-          // EggManagement.manageEggs(Pogo);
+          EggManagement.manageEggs(Pogo);
         }
       });
   }

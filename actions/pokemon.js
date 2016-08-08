@@ -64,11 +64,16 @@ function trimPokemon(Pogo) {
     _.forEach(groupedPokemon, function (pokemonGroup, key) {
       var pokedexInfo = Pogo.pokemonlist[key - 1];
 
-      if (_.size(pokemonGroup) > 1 && pokedexInfo/* && (!pokedexInfo.next_evolution || (pokedexInfo.next_evolution && pokedexInfo.prev_evolution))*/) {
+      if (_.size(pokemonGroup) > 1 && pokedexInfo) {
 
-        // Don't trim >= 1000 CP Pokemon and not Pinsirs
+        // Don't trim >= 1000 CP Pokemon or rarity 5 Pokemon
         _.remove(pokemonGroup, function (n) {
-          return (n.inventory_item_data.pokemon.cp >= Pogo.minCp && pokedexInfo.id != 127);
+          return (n.inventory_item_data.pokemon.cp >= Pogo.minCp || pokedexInfo.rarity === 5);
+        });
+
+        // Don't trim 40+ IV Pokemon that are 3 rarity or greater
+        _.remove(pokemonGroup, function (n) {
+          return (isHighIV(n) && pokedexInfo.rarity >= 3);
         });
 
         // Sort greatest to least
@@ -295,18 +300,29 @@ function printPokemonGrouped(Pogo) {
   console.log('');
 }
 
+function isHighIV(pokemon) {
+  var pokemonIV = pokemon.inventory_item_data.pokemon.individual_attack +
+    pokemon.inventory_item_data.pokemon.individual_defense +
+    pokemon.inventory_item_data.pokemon.individual_stamina;
+
+  return pokemonIV >= 40;
+}
+
 function printPokemonBigTicket(Pogo) {
 
-  console.log('Big Ticket Pokemon:')
+  console.log('Big Ticket Pokemon:');
 
   _.forEach(Pogo.playerPokemon, function (pokemon) {
     var id = pokemon.inventory_item_data.pokemon.id;
     var pokemonId = pokemon.inventory_item_data.pokemon.pokemon_id;
     var pokemonCp = pokemon.inventory_item_data.pokemon.cp;
+    var pokemonIV = pokemon.inventory_item_data.pokemon.individual_attack +
+      pokemon.inventory_item_data.pokemon.individual_defense +
+      pokemon.inventory_item_data.pokemon.individual_stamina;
     var pokedexInfo = Pogo.pokemonlist[pokemonId - 1];
 
     if (pokedexInfo && pokedexInfo.name && (pokedexInfo.rarity >= 5 || pokemonCp >= Pogo.minCp)) {
-      console.log(pokedexInfo.name + ' CP: ' + pokemonCp);
+      console.log(pokedexInfo.name + ' CP: ' + pokemonCp + ' IV: ' + _.floor((pokemonIV / 45) * 100, 2) + '%');
     }
   });
   console.log('');
