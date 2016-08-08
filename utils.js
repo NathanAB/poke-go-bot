@@ -57,6 +57,7 @@ function printStats(Pogo) {
   console.log('[i] Item Storage: ' + _.sumBy(Pogo.playerInventory, 'inventory_item_data.item.count') + ' / ' + Pogo.profile.item_storage);
   console.log('[i] XP Rate: ' + xps + ' XP/s');
   console.log('[i] XP Remaining to Level '  + (Pogo.playerStats.level + 1) + ': ' + (xpLeft / 1000).toFixed(1) + 'k (~' + minsRemaining + ' mins rem)');
+  console.log('[i] Total distance walked: ' + Math.round(Pogo.distWalked) + 'm');
 }
 
 module.exports = {

@@ -22,7 +22,7 @@ var location = {
   type: 'coords',
   coords: route[0]
 };
-var provider = 'ptc';
+var provider = process.argv[5] || 'ptc';
 
 // Interval between heartbeats in ms
 var HEARTBEAT_INTERVAL = 2000;
@@ -48,6 +48,7 @@ Pogo.evolves = 0;
 Pogo.transfers = 0;
 Pogo.verbose = VERBOSE;
 Pogo.timeStart = timeStart;
+Pogo.distWalked = 0;
 
 // Min CP of pokemon to keep
 Pogo.minCp = 1500;

@@ -71,11 +71,14 @@ function move(Pogo) {
   var stepLong = deltaLong / deltaSum * WALK_SPEED + _.random(-VARIANCE, VARIANCE, true);
 
   // Apply delta
-  currentCoords.latitude += stepLat;
-  currentCoords.longitude += stepLong;
+  var newLat = currentCoords.latitude + stepLat;
+  var newLong = currentCoords.longitude + stepLong;
+
+  // Track distance walked
+  Pogo.distWalked += Utils.getDistance(currentCoords.latitude, currentCoords.longitude, newLat, newLong);
 
   // Update location
-  Pogo.UpdateLocation({ type: 'coords', coords: currentCoords }, function (err, loc) {
+  Pogo.UpdateLocation({ type: 'coords', coords: {latitude: newLat, longitude: newLong} }, function (err, loc) {
     if (err) {
       throw err;
     }
